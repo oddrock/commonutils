@@ -1,10 +1,15 @@
-package com.oddrock.common.email.bean;
+package com.oddrock.common.mail;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EmailSent {
+/**
+ * 发出的邮件
+ * @author oddrock
+ *
+ */
+public class MailSent {
 	private String protocol;
 	private String smtpHost;
 	private boolean smtpAuth;
@@ -114,7 +119,7 @@ public class EmailSent {
 	public void addrecverAccount(String recverAccount){
 		recverAccounts.add(recverAccount);
 	}
-	public EmailSent() {
+	public MailSent() {
 		super();
 		recverAccounts = new HashSet<String>();
 		protocol = "smtp";

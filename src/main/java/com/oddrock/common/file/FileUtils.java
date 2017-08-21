@@ -158,18 +158,4 @@ public class FileUtils {
 	public static void writeLineToFile(String filePath, String conent, boolean append) {     
 		writeToFile(filePath, conent+"\n", append);
 	}
-	
-	
-	public static void main(String[] args){
-		/*String filePath = "C:\\Users\\oddro\\Desktop\\Hadoop权威指南第三版(英文).pdf";
-		System.out.println(getFileNameWithoutSuffixFromFilePath(filePath));
-		System.out.println(getFileNameSuffix(filePath));
-		System.out.println(getFileNameFromFilePath(filePath));
-		System.out.println(getDirPathFromFilePath(filePath));
-		System.out.println(renameFileByAdd(filePath, "323"));
-		System.out.println(renameFileByAdd(filePath, "C:\\","323"));*/
-		writeToFile("C:\\Users\\oddro\\Desktop\\test.log", "123\n", false);
-		writeToFile("C:\\Users\\oddro\\Desktop\\test.log", "456\n", false);
-		writeToFile("C:\\Users\\oddro\\Desktop\\test.log", new Date()+"\n", true);
-	}
 }

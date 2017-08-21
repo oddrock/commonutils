@@ -24,13 +24,4 @@ public class CmdExecutor {
 		}
 		return cmdResult;
 	}
-	
-
-	public static void main(String[] args) {
-		String cmd = "\"C:\\Program Files (x86)\\Foxit Software\\Foxit Phantom\\Foxit Phantom.exe\" C:\\flume.pdf";
-		CmdExecutor.getSingleInstance().exeCmd(cmd);
-		cmd = "taskkill /f /im \"Foxit Phantom.exe\"";
-		CmdExecutor.getSingleInstance().exeCmd(cmd);
-	}
-
 }

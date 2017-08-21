@@ -1,10 +1,17 @@
-package com.oddrock.common.email.bean;
+package com.oddrock.common.mail;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.mail.Address;
 
-public class Email {
+import org.apache.commons.mail.util.MimeMessageParser;
+
+/**
+ * 接收到的邮件
+ * @author oddrock
+ *
+ */
+public class MailRecv {
 	private String from;
 	private List<Address> cc = new ArrayList<Address>();
 	private List<Address> to = new ArrayList<Address>();
@@ -12,7 +19,16 @@ public class Email {
 	private String subject;
 	private String htmlContent;
 	private String plainContent;
-	private List<EmailAttachment> attachments = new ArrayList<EmailAttachment>();
+	private List<MailRecvAttach> attachments = new ArrayList<MailRecvAttach>();
+	public void init(MimeMessageParser parser) throws Exception{
+		this.setFrom(parser.getFrom());
+		this.setCc(parser.getCc());
+		this.setTo(parser.getTo());
+		this.setReplyTo(parser.getReplyTo());
+		this.setSubject(parser.getSubject());
+		this.setHtmlContent(parser.getHtmlContent());
+		this.setPlainContent(parser.getPlainContent());
+	}
 	public String getFrom() {
 		return from;
 	}
@@ -55,10 +71,10 @@ public class Email {
 	public void setPlainContent(String plainContent) {
 		this.plainContent = plainContent;
 	}
-	public List<EmailAttachment> getAttachments() {
+	public List<MailRecvAttach> getAttachments() {
 		return attachments;
 	}
-	public void setAttachments(List<EmailAttachment> attachments) {
+	public void setAttachments(List<MailRecvAttach> attachments) {
 		this.attachments = attachments;
 	}
 	@Override

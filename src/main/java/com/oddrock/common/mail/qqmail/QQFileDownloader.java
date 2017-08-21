@@ -1,4 +1,4 @@
-package com.oddrock.common.qq.file;
+package com.oddrock.common.mail.qqmail;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 
 import com.oddrock.common.file.FileUtils;
 import com.oddrock.common.file.UrlWebGetter;
-import com.oddrock.common.qq.file.bean.QQFileHtmlUrls;
 
 
 public class QQFileDownloader {
@@ -54,19 +53,5 @@ public class QQFileDownloader {
             strs.add(m.group(1));            
         }
         return strs;
-	}
-	
-	
-	
-	public static void main(String[] args){
-		/*String htmlUrlStr = "https://mail.qq.com/cgi-bin/ftnExs_download?t=exs_ftn_download&k=09623361863a8fcf26b905794261041d505451575c030154185a0203554c0206535a1e595259531f0151060754580f04045157526466367004521d1100073644&code=5b3ada62";
-		for (String s : parseQQFileUrlsFromQQFileHtmlUrl(htmlUrlStr)){
-            System.out.println(s);
-        } */
-		String content = FileUtils.readFileContentToStr("examples/qqmail.txt");
-		List<QQFileHtmlUrls> list = parseQQFileHtmlUrlsFromQQMail(content);
-		for(QQFileHtmlUrls e : list){
-			logger.warn(e.getQqFileName() + " | " + e.getQqFileHtmlUrl());
-		}
 	}
 }

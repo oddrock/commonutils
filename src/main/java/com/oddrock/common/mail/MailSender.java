@@ -1,4 +1,4 @@
-package com.oddrock.common.email;
+package com.oddrock.common.mail;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
@@ -12,10 +12,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.oddrock.common.email.bean.EmailSent;
-
-public class EmailSender {
-	public static void sendEmail(EmailSent emailSent) 
+public class MailSender {
+	public static void sendEmail(MailSent emailSent) 
 			throws UnsupportedEncodingException, MessagingException{
 		Properties props = new Properties();                    
 	    props.setProperty("mail.transport.protocol", emailSent.getProtocol());   
@@ -60,7 +58,7 @@ public class EmailSender {
 			String recverAccounts, String subject, String content, boolean smtpAuth, String smtpPort) 
 			throws UnsupportedEncodingException, MessagingException{
 		String[] recvers = recverAccounts.split(",");
-		EmailSent emailSent = new EmailSent();
+		MailSent emailSent = new MailSent();
 		for(String recver : recvers){
 			if(recver!=null && recver.trim().length()>0){
 				emailSent.addrecverAccount(recver.trim());
@@ -127,9 +125,5 @@ public class EmailSender {
         message.setContent("这是一封测试邮件", "text/html;charset=UTF-8");
         // 最后当然就是发送邮件啦
         Transport.send(message);
-	}
-	
-	public static void main(String[] args) throws MessagingException{
-		sendQQEmail();
 	}
 }

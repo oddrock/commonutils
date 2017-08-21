@@ -1,4 +1,4 @@
-package com.oddrock.common.qq.file.bean;
+package com.oddrock.common.mail.qqmail;
 public class QQFileHtmlUrls {
 	private String qqFileName;
 	private String qqFileHtmlUrl;

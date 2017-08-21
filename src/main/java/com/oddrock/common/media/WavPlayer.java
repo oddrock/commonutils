@@ -47,10 +47,4 @@ public class WavPlayer {
 			play(wavFilePath);
 		}
 	}
-
-	public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-		String filePath = "C:\\_Temp\\Scratch 2.0动画游戏与创意设计教程\\范例文件\\声音库\\欢迎光临_wav.wav";
-		WavPlayer.play(filePath,3);
-	}
-
 }
