@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
 import javax.activation.DataSource;
 import javax.mail.Authenticator;
 import javax.mail.Flags;
@@ -18,12 +17,9 @@ import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
-
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.apache.log4j.Logger;
-
 import com.oddrock.common.file.FileUtils;
-import com.oddrock.common.mail.qqmail.ImapQQMailRcvr;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
 
@@ -157,10 +153,5 @@ public class ImapMailRcvr{
 				return new PasswordAuthentication(userName, password);
 			}
 		};
-	}
-	
-	public static void main(String[] args) throws Exception{
-		ImapMailRcvr iqmr = new ImapMailRcvr(); 
-		iqmr.rcvMail("imap.qq.com","oddrock@qq.com", "jutlzokffjrwbhaa", "INBOX", true, true, "C:\\Users\\oddro\\Desktop\\qqmail");
 	}
 }
