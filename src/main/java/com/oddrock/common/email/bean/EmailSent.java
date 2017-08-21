@@ -1,4 +1,4 @@
-package com.oddrock.common.email;
+package com.oddrock.common.email.bean;
 
 import java.util.Date;
 import java.util.HashSet;

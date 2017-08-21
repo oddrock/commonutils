@@ -2,6 +2,7 @@ package com.oddrock.common.email;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+
 import javax.mail.Authenticator;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
@@ -11,7 +12,9 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class EmailManager {
+import com.oddrock.common.email.bean.EmailSent;
+
+public class EmailSender {
 	public static void sendEmail(EmailSent emailSent) 
 			throws UnsupportedEncodingException, MessagingException{
 		Properties props = new Properties();                    
