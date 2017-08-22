@@ -70,9 +70,7 @@ public class ImapMailRcvr{
 				Flags flags = message.getFlags(); 
 				if (!flags.contains(Flags.Flag.SEEN)){
 					logger.warn("开始解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
-					message.setFlag(Flags.Flag.SEEN, false);
 					MimeMessageParser parser = new MimeMessageParser((MimeMessage) message).parse();
-					message.setFlag(Flags.Flag.SEEN, true);
 					logger.warn("结束解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
 					MailRecv mail = new MailRecv();
 					mails.add(mail);
@@ -88,13 +86,7 @@ public class ImapMailRcvr{
 							FileUtils.mkdirIfNotExists(dirpath);
 							String filePath = dirpath + File.separator + ds.getName();
 							attachment.setLocalFilePath(filePath);
-							try{
-								downloadAttachToLocal(ds, filePath);
-							}catch(Exception e){
-								message.setFlag(Flags.Flag.SEEN, false);
-								throw e;
-							}
-							
+							downloadAttachToLocal(ds, filePath);							
 						}
 						
 					}

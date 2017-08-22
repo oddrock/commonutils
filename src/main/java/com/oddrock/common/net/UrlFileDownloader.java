@@ -1,11 +1,18 @@
-package com.oddrock.common.file;
+package com.oddrock.common.net;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.Properties;
+
+import javax.mail.Authenticator;
 
 import org.apache.log4j.Logger;
 
@@ -18,7 +25,7 @@ import org.apache.log4j.Logger;
 public class UrlFileDownloader {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(UrlFileDownloader.class);
-	
+
 	/**
 	 * 从网络Url中下载文件
 	 * 
@@ -27,13 +34,14 @@ public class UrlFileDownloader {
 	 * @param savePath
 	 * @throws IOException
 	 */
-	public static void downLoadFromUrl(String urlStr, String fileName, String savePath) throws IOException {
+	public static void downLoadFromUrl(String urlStr, String fileName,
+			String savePath) throws IOException {
 		URL url = new URL(urlStr);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		// 设置超时间为3秒
 		conn.setConnectTimeout(3 * 1000);
 		// 防止屏蔽程序抓取而返回403错误
-		conn.setRequestProperty("User-Agent", 
+		conn.setRequestProperty("User-Agent",
 				"Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
 		// 得到输入流
 		InputStream inputStream = conn.getInputStream();
@@ -62,7 +70,8 @@ public class UrlFileDownloader {
 	 * @return
 	 * @throws IOException
 	 */
-	public static byte[] readInputStream(InputStream inputStream) throws IOException {
+	public static byte[] readInputStream(InputStream inputStream)
+			throws IOException {
 		byte[] buffer = new byte[1024];
 		int len = 0;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
