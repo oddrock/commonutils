@@ -90,6 +90,7 @@ public class HttpDownload {
 		return null;
 	}
 	
+	@SuppressWarnings({ "resource", "unused" })
 	public static String download(String firstUrl, String realUrl, String filepath) {
 		try {
 			HttpClient client = new DefaultHttpClient();
