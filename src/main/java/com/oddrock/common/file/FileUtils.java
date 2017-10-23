@@ -266,7 +266,7 @@ public class FileUtils {
 
 	/**
 	 * 将一个目录下的所有文件汇总到目标目录下
-	 * 
+	 * 参考：http://www.cnblogs.com/acm-bingzi/p/javaFileMove.html
 	 * @param srcDirPath
 	 * @param dstDirPath
 	 * @param remainFlag
@@ -291,6 +291,10 @@ public class FileUtils {
 		 * getAllFilesAbsoultePathRecursively("C:\\Users\\oddro\\Desktop\\熊逸书院"
 		 * )){ System.out.println(path); }
 		 */
-		gatherAllFiles("C:\\Users\\oddro\\Desktop\\熊逸书院 - 副本", "C:\\Users\\oddro\\Desktop\\得到\\熊逸书院", false);
+		gatherAllFiles("C:\\_Download\\薛兆丰经济学课", "C:\\_Download\\得到\\薛兆丰经济学课", true);
+		/*gatherAllFiles("C:\\Users\\oddro\\Desktop\\关系攻略", "C:\\Users\\oddro\\Desktop\\得到\\关系攻略", true);
+		gatherAllFiles("C:\\Users\\oddro\\Desktop\\熊逸书院", "C:\\Users\\oddro\\Desktop\\得到\\熊逸书院", true);
+		gatherAllFiles("C:\\Users\\oddro\\Desktop\\武志红心理学", "C:\\Users\\oddro\\Desktop\\得到\\武志红心理学", true);
+		gatherAllFiles("C:\\Users\\oddro\\Desktop\\5分钟商学院", "C:\\Users\\oddro\\Desktop\\得到\\5分钟商学院", true);*/
 	}
 }
