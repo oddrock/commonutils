@@ -106,6 +106,18 @@ public class RobotManager {
 	}
 	
 	/**
+	 * 截图
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	public BufferedImage createScreenCapture(int x, int y, int width, int height){
+		return robot.createScreenCapture(new Rectangle(x,y,width,height));
+	}
+	
+	/**
 	 * 点击Down键
 	 * @return
 	 */
