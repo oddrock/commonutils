@@ -21,6 +21,38 @@ public class DateUtils {
 	public static String getFormatTime(){
 		return format.format(new Date());
 	}
+	
+	/**
+	 * 返回当前时间字符串，格式为SimpleDateFormat
+	 * @return
+	 */
+	public static String timeStr() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return sdf.format(new Date());
+	}
+	
+	public static String timeStrWithMillis() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		return sdf.format(new Date());
+	}
+	
+	/**
+	 * 返回当前时间的不带符号的字符串，格式为SimpleDateFormat
+	 * @return
+	 */
+	public static String timeStrWithoutPunctuation() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		return sdf.format(new Date());
+	}
+	
+	/**
+	 * 返回当前时间(含毫秒)的不带符号的字符串，格式为SimpleDateFormat
+	 * @return
+	 */
+	public static String timeStrWithMillisWithoutPunctuation() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		return sdf.format(new Date());
+	}
 
 	public static void main(String[] args) {
 		System.out.println(getFormatTime1());
