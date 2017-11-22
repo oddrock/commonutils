@@ -76,7 +76,13 @@ public class PropertiesReader {
 	public void loadProperties() {
 		try {
 			for(String filePath : filePathSet){
-				InputStream inputString = guessPropFile(filePath);
+				File file = new File(filePath);
+				InputStream inputString = null;
+				if(file.exists() && file.isFile()) {
+					inputString = new FileInputStream(file);
+				}else {
+					inputString = guessPropFile(filePath);
+				}
 				if(inputString==null){
 					continue;
 				}
