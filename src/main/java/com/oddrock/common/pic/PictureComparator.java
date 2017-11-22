@@ -335,6 +335,6 @@ public final class PictureComparator {
 	}
 	
 	public static void main(String[] args) throws IOException{
-        System.out.printf("sim=%f",compare(ImageIO.read(new File("C:\\Users\\oddro\\Desktop\\caj\\caj05.jpg")), ImageIO.read(new File("C:\\Users\\oddro\\Desktop\\caj\\caj06.jpg"))));
+        System.out.printf("sim=%f",compare(ImageIO.read(new File("C:\\Users\\qzfeng\\Desktop\\cajviewer_printnow.bmp")), ImageIO.read(new File("C:\\Users\\qzfeng\\Desktop\\fae272f2-fcee-4cc4-81cf-e9993666b70e.bmp"))));
 	}
 }
