@@ -13,7 +13,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class FileUtils {
+	private static Logger logger = Logger.getLogger(FileUtils.class);
 	/**
 	 * 从文件路径获取文件名
 	 * 
@@ -134,11 +137,10 @@ public class FileUtils {
 	 * @param addStr
 	 * @return
 	 */
-	public static String renameFileByAdd(String srcFilePath,
-			String destDirPath, String addStr) {
+	public static String renameFileByAdd(String srcFilePath, String destDirPath, String addStr) {
 		String fileName = getFileNameWithoutSuffixFromFilePath(srcFilePath);
 		String suffix = getFileNameSuffix(srcFilePath);
-		if(addStr!=null && addStr.length()>0){
+		if (addStr != null && addStr.length() > 0) {
 			fileName = fileName + addStr;
 		}
 		if (suffix.length() > 0) {
@@ -154,12 +156,10 @@ public class FileUtils {
 		}
 	}
 
-	public static void writeToFile(String filePath, String conent,
-			boolean append) {
+	public static void writeToFile(String filePath, String conent, boolean append) {
 		BufferedWriter out = null;
 		try {
-			out = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(filePath, append)));
+			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, append)));
 			out.write(conent);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -181,8 +181,7 @@ public class FileUtils {
 	 * @param conent
 	 * @param append
 	 */
-	public static void writeLineToFile(String filePath, String conent,
-			boolean append) {
+	public static void writeLineToFile(String filePath, String conent, boolean append) {
 		writeToFile(filePath, conent + "\n", append);
 	}
 
@@ -237,8 +236,8 @@ public class FileUtils {
 	}
 
 	/**
-	 * 拷贝单个文件
-	 * 参考：http://www.cnblogs.com/langtianya/p/4857524.html
+	 * 拷贝单个文件 参考：http://www.cnblogs.com/langtianya/p/4857524.html
+	 * 
 	 * @param oldPath
 	 * @param newPath
 	 */
@@ -265,8 +264,8 @@ public class FileUtils {
 	}
 
 	/**
-	 * 将一个目录下的所有文件汇总到目标目录下
-	 * 参考：http://www.cnblogs.com/acm-bingzi/p/javaFileMove.html
+	 * 将一个目录下的所有文件汇总到目标目录下 参考：http://www.cnblogs.com/acm-bingzi/p/javaFileMove.html
+	 * 
 	 * @param srcDirPath
 	 * @param dstDirPath
 	 * @param remainFlag
@@ -284,17 +283,65 @@ public class FileUtils {
 		}
 	}
 
+	/**
+	 * 将文件移动到某个目录
+	 * @param srcFilePath
+	 * @param dstDirPath
+	 * @param cover				如果目标文件夹有该文件，且cover为true，则覆盖
+	 */
+	public static void moveFile(String srcFilePath, String dstDirPath, boolean cover) {
+		File srcFile = new File(srcFilePath);
+		if(!srcFile.exists()) {
+			logger.error(srcFilePath+"：文件不存在，无法移动！");
+			return;
+		}
+		if(!srcFile.isFile()) {
+			logger.error(srcFilePath+"：不是文件，无法移动！");
+		}
+		File dstDir = new File(dstDirPath);
+		if(!dstDir.exists()) {
+			dstDir.mkdirs();
+		}
+		File dstFile = new File(dstDir, srcFile.getName());
+		if(dstFile.exists() && dstFile.isFile()) {
+			if(cover) {
+				dstFile.delete();
+				srcFile.renameTo(dstFile);
+			}else {
+				logger.error(dstFile+"：文件已存在，无法移动！");
+			}
+		}else {
+			srcFile.renameTo(dstFile);
+		}
+		
+	}
+	
+	/**
+	 * 将文件移动到某个目录
+	 * @param srcFilePath
+	 * @param dstDirPath
+	 */
+	public static void moveFile(String srcFilePath, String dstDirPath) {
+		moveFile(srcFilePath, dstDirPath, true);
+	}
+	
 	public static void main(String[] args) {
-		//mkDirRecursively("C:\\Users\\oddro\\Desktop");
+		// mkDirRecursively("C:\\Users\\oddro\\Desktop");
 		/*
 		 * for(String path :
-		 * getAllFilesAbsoultePathRecursively("C:\\Users\\oddro\\Desktop\\熊逸书院"
-		 * )){ System.out.println(path); }
+		 * getAllFilesAbsoultePathRecursively("C:\\Users\\oddro\\Desktop\\熊逸书院" )){
+		 * System.out.println(path); }
 		 */
 		gatherAllFiles("C:\\_Download\\薛兆丰经济学课", "C:\\_Download\\得到\\薛兆丰经济学课", true);
-		/*gatherAllFiles("C:\\Users\\oddro\\Desktop\\关系攻略", "C:\\Users\\oddro\\Desktop\\得到\\关系攻略", true);
-		gatherAllFiles("C:\\Users\\oddro\\Desktop\\熊逸书院", "C:\\Users\\oddro\\Desktop\\得到\\熊逸书院", true);
-		gatherAllFiles("C:\\Users\\oddro\\Desktop\\武志红心理学", "C:\\Users\\oddro\\Desktop\\得到\\武志红心理学", true);
-		gatherAllFiles("C:\\Users\\oddro\\Desktop\\5分钟商学院", "C:\\Users\\oddro\\Desktop\\得到\\5分钟商学院", true);*/
+		/*
+		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\关系攻略",
+		 * "C:\\Users\\oddro\\Desktop\\得到\\关系攻略", true);
+		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\熊逸书院",
+		 * "C:\\Users\\oddro\\Desktop\\得到\\熊逸书院", true);
+		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\武志红心理学",
+		 * "C:\\Users\\oddro\\Desktop\\得到\\武志红心理学", true);
+		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\5分钟商学院",
+		 * "C:\\Users\\oddro\\Desktop\\得到\\5分钟商学院", true);
+		 */
 	}
 }

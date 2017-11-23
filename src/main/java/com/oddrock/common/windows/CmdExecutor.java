@@ -24,4 +24,13 @@ public class CmdExecutor {
 		}
 		return cmdResult;
 	}
+	
+	/**
+	 * 打开目录对应窗口
+	 * @param path
+	 * @return
+	 */
+	public CmdResult openDirWindows(String path) {
+		return exeCmd("explorer \"" + path + "\"");
+	}
 }
