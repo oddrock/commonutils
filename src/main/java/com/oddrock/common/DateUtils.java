@@ -45,6 +45,11 @@ public class DateUtils {
 		return sdf.format(new Date());
 	}
 	
+	public static String timeStrInChinese() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分ss秒");
+		return sdf.format(new Date());
+	}
+	
 	/**
 	 * 返回当前时间(含毫秒)的不带符号的字符串，格式为SimpleDateFormat
 	 * @return
