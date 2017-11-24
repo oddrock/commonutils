@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import com.oddrock.common.awt.RobotManager;
+
 public class BufferedImageUtils {
 	/**
 	 * 将BufferedImage写入文件，默认写为bmp文件
@@ -54,5 +56,19 @@ public class BufferedImageUtils {
 	 */
 	public static BufferedImage read(String imgFilePath) throws IOException{
 		return read(new File(imgFilePath));
+	}
+	
+	/**
+	 * 截图并保存为文件
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param parentDirPath
+	 * @throws IOException
+	 */
+	public static void captureImageAndSave(RobotManager robotMngr, int x, int y, int width, int height, String parentDirPath, String fileNameWithoutSuffix) throws IOException {
+		BufferedImage image = robotMngr.createScreenCapture(x, y ,width, height);
+		write(image, parentDirPath, fileNameWithoutSuffix);
 	}
 }
