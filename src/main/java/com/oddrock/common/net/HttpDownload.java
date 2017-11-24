@@ -22,6 +22,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
  * @author tanjundong
  * 
  */
+@SuppressWarnings("deprecation")
 public class HttpDownload {
 
 	public static final int cache = 10 * 1024;
@@ -61,6 +62,7 @@ public class HttpDownload {
 	 */
 	public static String download(String url, String filepath) {
 		try {
+			@SuppressWarnings("resource")
 			HttpClient client = new DefaultHttpClient();
 			HttpGet httpget = new HttpGet(url);
 			HttpResponse response = client.execute(httpget);

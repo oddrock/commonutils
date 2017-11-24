@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
  * @author oddrock
  *
  */
+@SuppressWarnings("unused")
 public class UrlFileDownloader {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(UrlFileDownloader.class);
