@@ -38,6 +38,15 @@ public class CmdExecutor {
 	}
 	
 	/**
+	 * 最大化方式打开窗口
+	 * @param path
+	 * @return
+	 */
+	public CmdResult openDirWindowsAtMaxMode(String path) {
+		return exeCmd("explorer \"" + path + "\"  max");
+	}
+	
+	/**
 	 * 检测指定APP是否已打开
 	 * @param appname	
 	 * @throws IOException 
