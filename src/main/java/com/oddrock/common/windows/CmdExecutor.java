@@ -49,7 +49,8 @@ public class CmdExecutor {
 		BufferedReader br = new BufferedReader(ir);
 		String line = null;
 		while((line=br.readLine())!=null) {
-			if(line.split("\\s+")[0].equalsIgnoreCase(appname)) {
+			// 按数字划分才不会让名字中间有空格的appname被错误分割
+			if(line.split("\\d+")[0].trim().equalsIgnoreCase(appname.trim())) {
 				return true;
 			}
 		}
