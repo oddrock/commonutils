@@ -263,6 +263,7 @@ public class ProcessInfoUtil {
     }  
   
     // 执行完相应的命令行就退出cmd  
+	@SuppressWarnings("unused")
 	private static String getCommandByCmd(String cmdStr) {  
         StringBuffer command = new StringBuffer();  
         command.append("cmd /C ");  
@@ -271,7 +272,8 @@ public class ProcessInfoUtil {
     }  
   
     // 获取当前环境的Java_Home  
-    private static String getJavaHome() throws Exception {  
+    @SuppressWarnings("unused")
+	private static String getJavaHome() throws Exception {  
         String javaHome = System.getenv("JAVA_HOME");  
         javaHome = javaHome == null ? System.getProperty("java.home") : javaHome;  
         return javaHome;  
