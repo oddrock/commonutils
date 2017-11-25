@@ -1,6 +1,7 @@
 package com.oddrock.common.windows;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -64,5 +65,9 @@ public class CmdExecutor {
 			}
 		}
 		return false;
+	}
+	
+	public void exportTasklistToFile(File dstFile) throws IOException {
+		CmdExecutor.getSingleInstance().exeCmd("tasklist /svc > \""+dstFile.getCanonicalPath() + "\"");
 	}
 }
