@@ -67,6 +67,11 @@ public class CmdExecutor {
 		return false;
 	}
 	
+	/**
+	 * 将tasklist内容输出到一个文件
+	 * @param dstFile
+	 * @throws IOException
+	 */
 	public void exportTasklistToFile(File dstFile) throws IOException {
 		CmdExecutor.getSingleInstance().exeCmd("tasklist /svc > \""+dstFile.getCanonicalPath() + "\"");
 	}
