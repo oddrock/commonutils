@@ -69,6 +69,12 @@ public class RobotManager {
 		return this;
 	}
 	
+	public RobotManager clickMouseRight() {
+		robot.mousePress(InputEvent.BUTTON3_MASK);
+		robot.mouseRelease(InputEvent.BUTTON3_MASK);
+		return this;
+	}
+	
 	/**
 	 * 点击Enter键
 	 * @return
