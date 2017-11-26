@@ -173,6 +173,24 @@ public class FileUtils {
 			}
 		}
 	}
+	
+	public static void writeToFile(String filePath, String conent, boolean append, String encoding) {
+		BufferedWriter out = null;
+		try {
+			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, append), encoding));
+			out.write(conent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (out != null) {
+					out.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	/**
 	 * 将一行数据追加到文件
