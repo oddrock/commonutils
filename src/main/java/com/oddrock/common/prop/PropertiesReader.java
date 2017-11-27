@@ -60,6 +60,10 @@ public class PropertiesReader {
 		return Integer.parseInt(getValue(key));
 	}
 	
+	public long getLongValue(String key){
+		return Long.parseLong(getValue(key));
+	}
+	
 	public boolean getBooleanValue(String key){
 		return Boolean.parseBoolean(getValue(key));
 	}
