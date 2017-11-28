@@ -1,5 +1,6 @@
 package com.oddrock.common.file;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,6 +18,7 @@ import org.apache.log4j.Logger;
 
 public class FileUtils {
 	private static Logger logger = Logger.getLogger(FileUtils.class);
+
 	/**
 	 * 从文件路径获取文件名
 	 * 
@@ -173,7 +175,7 @@ public class FileUtils {
 			}
 		}
 	}
-	
+
 	public static void writeToFile(String filePath, String conent, boolean append, String encoding) {
 		BufferedWriter out = null;
 		try {
@@ -303,54 +305,100 @@ public class FileUtils {
 
 	/**
 	 * 将文件移动到某个目录
+	 * 
 	 * @param srcFilePath
 	 * @param dstDirPath
-	 * @param cover				如果目标文件夹有该文件，且cover为true，则覆盖
+	 * @param cover
+	 *            如果目标文件夹有该文件，且cover为true，则覆盖
 	 */
 	public static void moveFile(String srcFilePath, String dstDirPath, boolean cover) {
 		File srcFile = new File(srcFilePath);
-		if(!srcFile.exists()) {
-			logger.error(srcFilePath+"：文件不存在，无法移动！");
+		if (!srcFile.exists()) {
+			logger.error(srcFilePath + "：文件不存在，无法移动！");
 			return;
 		}
-		if(!srcFile.isFile()) {
-			logger.error(srcFilePath+"：不是文件，无法移动！");
+		if (!srcFile.isFile()) {
+			logger.error(srcFilePath + "：不是文件，无法移动！");
 		}
 		File dstDir = new File(dstDirPath);
-		if(!dstDir.exists()) {
+		if (!dstDir.exists()) {
 			dstDir.mkdirs();
 		}
 		File dstFile = new File(dstDir, srcFile.getName());
-		if(dstFile.exists() && dstFile.isFile()) {
-			if(cover) {
+		if (dstFile.exists() && dstFile.isFile()) {
+			if (cover) {
 				dstFile.delete();
 				srcFile.renameTo(dstFile);
-			}else {
-				logger.error(dstFile+"：文件已存在，无法移动！");
+			} else {
+				logger.error(dstFile + "：文件已存在，无法移动！");
 			}
-		}else {
+		} else {
 			srcFile.renameTo(dstFile);
 		}
-		
+
 	}
-	
+
 	/**
 	 * 将文件移动到某个目录
+	 * 
 	 * @param srcFilePath
 	 * @param dstDirPath
 	 */
 	public static void moveFile(String srcFilePath, String dstDirPath) {
 		moveFile(srcFilePath, dstDirPath, true);
 	}
-	
-	public static void main(String[] args) {
+
+	private static String toHex(byte[] byteArray) {
+		int i;
+		StringBuffer buf = new StringBuffer("");
+		int len = byteArray.length;
+		for (int offset = 0; offset < len; offset++) {
+			i = byteArray[offset];
+			if (i < 0)
+				i += 256;
+			if (i < 16)
+				buf.append("0");
+			buf.append(Integer.toHexString(i));
+		}
+		return buf.toString().toUpperCase();
+	}
+
+	@SuppressWarnings("resource")
+	/**
+	 * 获取文本文件的编码格式
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	public static String getEncoding(File file) throws IOException {
+		BufferedInputStream bin = new BufferedInputStream(new FileInputStream(file));
+		byte[] b = new byte[10];
+		bin.read(b, 0, b.length);
+		String first = toHex(b);
+		// 这里可以看到各种编码的前几个字符是什么，gbk编码前面没有多余的
+		String code = null;
+		if (first.startsWith("EFBBBF")) {
+			code = "UTF-8";
+		} else if (first.startsWith("FEFF00")) {
+			code = "UTF-16BE";
+		} else if (first.startsWith("FFFE")) {
+			code = "Unicode";
+		} else if (first.startsWith("FFFE")) {
+			code = "Unicode";
+		} else {
+			code = "GBK";
+		}
+		return code;
+	}
+
+	public static void main(String[] args) throws IOException {
 		// mkDirRecursively("C:\\Users\\oddro\\Desktop");
 		/*
 		 * for(String path :
 		 * getAllFilesAbsoultePathRecursively("C:\\Users\\oddro\\Desktop\\熊逸书院" )){
 		 * System.out.println(path); }
 		 */
-		gatherAllFiles("C:\\_Download\\薛兆丰经济学课", "C:\\_Download\\得到\\薛兆丰经济学课", true);
+		//gatherAllFiles("C:\\_Download\\薛兆丰经济学课", "C:\\_Download\\得到\\薛兆丰经济学课", true);
 		/*
 		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\关系攻略",
 		 * "C:\\Users\\oddro\\Desktop\\得到\\关系攻略", true);
@@ -361,5 +409,9 @@ public class FileUtils {
 		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\5分钟商学院",
 		 * "C:\\Users\\oddro\\Desktop\\得到\\5分钟商学院", true);
 		 */
+		for(File file : new File("C:\\Users\\qzfeng\\Desktop\\cajwait").listFiles()) {
+			System.out.println(getEncoding(file));
+		}
 	}
+
 }
