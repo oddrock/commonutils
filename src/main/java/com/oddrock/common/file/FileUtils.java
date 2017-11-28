@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -362,33 +363,46 @@ public class FileUtils {
 		}
 		return buf.toString().toUpperCase();
 	}
-
-	@SuppressWarnings("resource")
+	
 	/**
 	 * 获取文本文件的编码格式
 	 * @param file
 	 * @return
 	 * @throws IOException
 	 */
-	public static String getEncoding(File file) throws IOException {
+	public static String getEncoding(File file) throws IOException{
 		BufferedInputStream bin = new BufferedInputStream(new FileInputStream(file));
 		byte[] b = new byte[10];
-		bin.read(b, 0, b.length);
-		String first = toHex(b);
 		// 这里可以看到各种编码的前几个字符是什么，gbk编码前面没有多余的
 		String code = null;
-		if (first.startsWith("EFBBBF")) {
-			code = "UTF-8";
-		} else if (first.startsWith("FEFF00")) {
-			code = "UTF-16BE";
-		} else if (first.startsWith("FFFE")) {
-			code = "Unicode";
-		} else if (first.startsWith("FFFE")) {
-			code = "Unicode";
-		} else {
-			code = "GBK";
+		try {
+			bin.read(b, 0, b.length);
+			String first = toHex(b);		
+			if (first.startsWith("EFBBBF")) {
+				code = "UTF-8";
+			} else if (first.startsWith("FEFF00")) {
+				code = "UTF-16BE";
+			} else if (first.startsWith("FFFE")) {
+				code = "Unicode";
+			} else if (first.startsWith("FFFE")) {
+				code = "Unicode";
+			} else {
+				code = "GBK";
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			if(bin!=null) bin.close();;
 		}
 		return code;
+	}
+	
+	// 确保删除该文件
+	public static void deleteAndConfirm(File file) throws InterruptedException {
+		if(file==null || !file.exists() || !file.isFile()) return;
+		while(!file.delete()) {
+			Thread.sleep(1000);
+		}
 	}
 
 	public static void main(String[] args) throws IOException {
