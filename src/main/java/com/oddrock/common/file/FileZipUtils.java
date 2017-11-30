@@ -7,10 +7,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
 public final class FileZipUtils {
+	private static Logger logger = Logger.getLogger(FileZipUtils.class);
+			
 	private FileZipUtils() {}
 
 	/**
@@ -23,26 +32,33 @@ public final class FileZipUtils {
 	 * @return
 	 * @throws IOException 
 	 */
-	public static boolean zip(File srcDir, String zipDirPath, String zipFileName, boolean cover) throws IOException {
-		if(!srcDir.exists()){
+	public static FileZipResult zip(File srcDir, String zipDirPath, String zipFileName, boolean cover) throws IOException {
+		FileZipResult result = new FileZipResult();
+		if(srcDir==null || !srcDir.exists()){
 			System.out.println("待压缩的文件目录：" + srcDir.getCanonicalPath() + "不存在.");
+			result.setSuccess(false);
+			return result;
 		}
 		if(!srcDir.isDirectory()){
 			System.out.println("待压缩的文件目录：" + srcDir.getCanonicalPath() + "不是目录");
+			result.setSuccess(false);
+			return result;
 		}
 		return zip(srcDir.listFiles(), zipDirPath, zipFileName, cover);
 	}
 	
 	@SuppressWarnings("resource")
-	public static boolean zip(File[] srcFiles, String zipDirPath, String zipFileName, boolean cover) {
+	public static FileZipResult zip(File[] srcFiles, String zipDirPath, String zipFileName, boolean cover) {
+		FileZipResult result = new FileZipResult();
 		boolean flag = false;
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
-
+		File zipFile = null;
 		try {
-			File zipFile = new File(zipDirPath, zipFileName + ".zip");
+			zipFile = new File(zipDirPath, zipFileName + ".zip");
+			logger.warn("开始压缩文件到："+zipFile.getCanonicalPath());
 			if (zipFile.exists() && cover) {
 				zipFile.delete();
 			}
@@ -53,6 +69,7 @@ public final class FileZipUtils {
 				zos = new ZipOutputStream(new BufferedOutputStream(fos));
 				byte[] bufs = new byte[1024 * 10];
 				for (File srcFile : srcFiles) {
+					logger.warn("开始将文件：【"+srcFile.getCanonicalPath()+"】压缩到："+zipFile.getCanonicalPath());
 					// 创建ZIP实体，并添加进压缩包
 					ZipEntry zipEntry = new ZipEntry(srcFile.getName());
 					zos.putNextEntry(zipEntry);
@@ -63,9 +80,11 @@ public final class FileZipUtils {
 					while ((read = bis.read(bufs, 0, 1024 * 10)) != -1) {
 						zos.write(bufs, 0, read);
 					}
+					logger.warn("结束将文件：【"+srcFile.getCanonicalPath()+"】压缩到："+zipFile.getCanonicalPath());
 				}
 				flag = true;
 			}
+			logger.warn("结束压缩文件到："+zipFile.getCanonicalPath());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -81,19 +100,106 @@ public final class FileZipUtils {
 				throw new RuntimeException(e);
 			}
 		}
-		return flag;
+		if(flag){
+			result.setZipFile(zipFile);
+		}
+		result.setSuccess(flag);
+		return result;
+	}
+	
+	/**
+	 * 将文件打包，每个打包文件不超过zipFileMaxSize大小，除非单个文件已经超过这个大小
+	 * @param srcDir
+	 * @param zipDirPath
+	 * @param zipFileName
+	 * @param cover
+	 * @param zipFileMaxSize	zip文件最大大小，单位Byte
+	 * @return
+	 * @throws IOException
+	 */
+	public static Set<FileZipResult> zip(File[] srcFiles, String zipDirPath, String zipFileName, boolean cover, long zipFileMaxSize) throws IOException {
+		Set<FileZipResult> result = new HashSet<FileZipResult>();
+		// 如果zipFileMaxSize参数小于等于0，说明不需要控制压缩包的大小
+		if(zipFileMaxSize<=0){
+			result.add(zip(srcFiles, zipDirPath, zipFileName, cover));
+		}
+		Set<File> srcFileSet = new HashSet<File>(Arrays.asList(srcFiles));
+		// 记录要压缩的文件的总大小
+		Long totalFileSize = 0L;
+		// 生成的压缩文件名中的序号
+		int index = 1;
+		// 临时存放本批次要压缩的文件的Set
+		Set<File> waitZipFileSet = new HashSet<File>();
+		Iterator<File> iterator = srcFileSet.iterator();
+		
+		while(iterator.hasNext()){
+			File file = iterator.next();
+			// 如果一个文件已经超过最大闲置，就单独打包
+			if(file.length()>=zipFileMaxSize){
+				result.add(zip(new File[]{file}, zipDirPath, zipFileName+StringUtils.leftPad(String.valueOf(index), 2, "0"), cover));
+				index++;
+				iterator.remove();
+			}
+			// 如果本文件和tmpFileSet中文件的大小加在一起小于zipFileMaxSize，就把本文件加入本批次
+			else if((totalFileSize+file.length())<zipFileMaxSize){
+				waitZipFileSet.add(file);
+				iterator.remove();
+				totalFileSize += file.length();
+			}else{
+				File[] tmpFileArray = new File[waitZipFileSet.size()];
+				int i = 0;
+				for(File f:waitZipFileSet){
+					tmpFileArray[i] =f;
+					i++;
+				}
+				// 如果本文件和tmpFileSet中文件的大小加在一起大于等于zipFileMaxSize，就将本批次压缩
+				result.add(zip(tmpFileArray, zipDirPath, zipFileName+StringUtils.leftPad(String.valueOf(index), 2, "0"), cover));
+				index++;
+				waitZipFileSet.clear();
+				waitZipFileSet.add(file);
+				iterator.remove();
+				totalFileSize = file.length();
+			}
+		}
+		// 如果还剩下文件
+		if(waitZipFileSet.size()>0){
+			File[] tmpFileArray = new File[waitZipFileSet.size()];
+			int i = 0;
+			for(File file:waitZipFileSet){
+				tmpFileArray[i] =file;
+				i++;
+			}
+			result.add(zip(tmpFileArray, zipDirPath, zipFileName+StringUtils.leftPad(String.valueOf(index), 2, "0"), cover));
+		}
+		return result;
+	}
+	
+	public static Set<FileZipResult> zip(File srcDir, String zipDirPath, String zipFileName, boolean cover, long zipFileMaxSize) throws IOException {
+		Set<FileZipResult> result = new HashSet<FileZipResult>();
+		if(srcDir==null || !srcDir.exists()){
+			System.out.println("待压缩的文件目录：" + srcDir.getCanonicalPath() + "不存在.");
+			return result;
+		}
+		if(!srcDir.isDirectory()){
+			System.out.println("待压缩的文件目录：" + srcDir.getCanonicalPath() + "不是目录");
+			return result;
+		}
+		return zip(srcDir.listFiles(), zipDirPath, zipFileName, cover, zipFileMaxSize);
 	}
 
 	public static void main(String[] args) throws IOException {
 		String sourceFilePath = "C:\\Users\\oddro\\Desktop\\哈哈儿";
 		String zipFilePath = "C:\\Users\\oddro\\Desktop";
 		String fileName = "我的压缩包";
-		boolean flag = FileZipUtils.zip(new File(sourceFilePath), zipFilePath,fileName, true);
-		if (flag) {
+		FileZipUtils.zip(new File(sourceFilePath), zipFilePath,fileName, true, 15*1024*1024);
+		/*if (flag) {
 			System.out.println("文件打包成功!");
 		} else {
 			System.out.println("文件打包失败!");
-		}
+		}*/
+		/*for (File file: new File("C:\\Users\\oddro\\Desktop\\哈哈儿\\").listFiles()){
+			System.out.println(file.getName() + "："+(double)file.length()/(double)1024);
+		}*/
 	}
 
 }
