@@ -7,12 +7,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 
 public class FileUtils {
@@ -402,6 +404,18 @@ public class FileUtils {
 			Thread.sleep(1000);
 		}
 	}
+	
+	// 删除所有隐藏文件
+	public static void deleteHiddenFiles(File dir){ 
+        File[] files = dir.listFiles(); 
+        for(File f:files)  {  
+        	if(f.isFile() && f.isHidden()){
+        		f.delete();
+        	}  
+        }
+	}
+	
+	 
 
 	public static void main(String[] args) throws IOException {
 		// mkDirRecursively("C:\\Users\\oddro\\Desktop");
@@ -421,9 +435,26 @@ public class FileUtils {
 		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\5分钟商学院",
 		 * "C:\\Users\\oddro\\Desktop\\得到\\5分钟商学院", true);
 		 */
-		for(File file : new File("C:\\Users\\qzfeng\\Desktop\\cajwait").listFiles()) {
+		/*for(File file : new File("C:\\Users\\qzfeng\\Desktop\\cajwait").listFiles()) {
 			System.out.println(getEncoding(file));
-		}
+		}*/
+		
+		File  file = new File("C:\\_Download");  
+		deleteHiddenFiles(file);
+        File[] files = file.listFiles(); 
+        System.out.println("第一遍");
+        for(File f:files)  {  
+        	if(f.isFile() && f.isHidden()){
+        		System.out.println(f);
+        		f.delete();
+        	}  
+        }  
+        System.out.println("第二遍");
+        for(File f:files)  {  
+        	if(f.isFile() && f.isHidden()){
+        		System.out.println(f);
+        	}  
+        } 
 	}
 
 }
