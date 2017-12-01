@@ -37,7 +37,7 @@ public class CmdExecutor {
 	 * @return
 	 */
 	public CmdResult openDirWindows(String path) {
-		return exeCmd("explorer \"" + path + "\"");
+		return exeCmd("cmd.exe /c start /max explorer \"" + path + "\"");
 	}
 	
 	/**
@@ -46,7 +46,7 @@ public class CmdExecutor {
 	 * @return
 	 */
 	public CmdResult openDirWindowsAtMaxMode(String path) {
-		return exeCmd("start /max explorer \"" + path + "\"");
+		return exeCmd("cmd.exe /c start /max explorer \"" + path + "\"");
 	}
 	
 	/**
