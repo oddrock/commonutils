@@ -7,9 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -257,29 +255,35 @@ public class FileUtils {
 	}
 
 	/**
-	 * 拷贝单个文件 参考：http://www.cnblogs.com/langtianya/p/4857524.html
+	 * 复制单个文件
 	 * 
-	 * @param oldPath
-	 * @param newPath
+	 * @param srcFilePath
+	 * @param dstFilePath
 	 */
-	@SuppressWarnings({ "unused", "resource" })
-	public static void copyFile(String oldPath, String newPath) {
+	public static void copyFile(String srcFilePath, String dstFilePath) {
+		FileInputStream in = null;
+		FileOutputStream out = null;
 		try {
-			int bytesum = 0;
 			int byteread = 0;
-			File oldfile = new File(oldPath);
-			if (oldfile.exists()) { // 文件存在时
-				InputStream inStream = new FileInputStream(oldPath); // 读入原文件
-				FileOutputStream fs = new FileOutputStream(newPath);
-				byte[] buffer = new byte[1444];
-				while ((byteread = inStream.read(buffer)) != -1) {
-					bytesum += byteread; // 字节数 文件大小
-					fs.write(buffer, 0, byteread);
+			File srcFile = new File(srcFilePath);
+			if (srcFile.exists() && srcFile.isFile()) { 
+				in = new FileInputStream(srcFilePath); 
+				out = new FileOutputStream(dstFilePath);
+				byte[] buffer = new byte[1024];
+				while ((byteread = in.read(buffer)) != -1) {
+					out.write(buffer, 0, byteread);
 				}
-				inStream.close();
+				in.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				if(in!=null) in.close();
+				if(out!=null) out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
