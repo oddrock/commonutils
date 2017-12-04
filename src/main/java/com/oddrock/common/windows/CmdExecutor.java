@@ -53,11 +53,32 @@ public class CmdExecutor {
 		String line = null;
 		while((line=br.readLine())!=null) {
 			// 按数字划分才不会让名字中间有空格的appname被错误分割
-			if(line.split("\\d+")[0].trim().equalsIgnoreCase(appname.trim())) {
+			if(line.split("\\s+\\d+")[0].trim().equalsIgnoreCase(appname.trim())) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	// 根据APP部分名称kill app
+	public void killApp(String appnamelike) throws IOException {
+		Process p = Runtime.getRuntime().exec("tasklist /svc");  
+		InputStream is = p.getInputStream(); 
+		InputStreamReader ir = new InputStreamReader(is, "GBK");  
+		BufferedReader br = new BufferedReader(ir);
+		String line = null;
+		String appname = null;
+		while((line=br.readLine())!=null) {
+			// 按数字划分才不会让名字中间有空格的appname被错误分割
+			if(line.split("\\s+\\d+")[0].trim().contains(appnamelike.trim())) {
+				appname = line.split("\\s+\\d+")[0].trim();
+				break;
+			}
+		}
+		if(appname!=null) {
+			exeCmd("taskkill /f /im \"" + appname + "\"");
+		}
+		
 	}
 	
 	/**
@@ -96,6 +117,7 @@ public class CmdExecutor {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		System.out.println(CmdExecutor.getSingleInstance().getProcNum("FineReader.exe"));
+		//System.out.println(CmdExecutor.getSingleInstance().getProcNum("FineReader.exe"));
+		CmdExecutor.getSingleInstance().killApp("pdfSaver");
 	}
 }
