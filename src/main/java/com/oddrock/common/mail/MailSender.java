@@ -81,6 +81,12 @@ public class MailSender {
 		sendEmailFast(senderAccount, senderPasswd, recverAccounts, subject, subject, false, null);
 	}
 	
+	public static void sendEmailFast(String senderAccount, String senderPasswd, 
+			String recverAccounts, String subject, String content) 
+			throws UnsupportedEncodingException, MessagingException{
+		sendEmailFast(senderAccount, senderPasswd, recverAccounts, subject, content, false, null);
+	}
+	
 	public static void sendEmailFastByAuth(String senderAccount, String senderPasswd, 
 			String recverAccounts, String subject, String smtpPort) 
 			throws UnsupportedEncodingException, MessagingException{

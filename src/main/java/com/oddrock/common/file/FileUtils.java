@@ -410,7 +410,8 @@ public class FileUtils {
 	}
 	
 	// 删除所有隐藏文件
-	public static void deleteHiddenFiles(File dir){ 
+	public static void deleteHiddenFiles(File dir){   
+        if(dir==null || !dir.exists() || !dir.isDirectory()) return;
         File[] files = dir.listFiles(); 
         for(File f:files)  {  
         	if(f.isFile() && f.isHidden()){
