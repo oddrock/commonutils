@@ -1,9 +1,12 @@
 package com.oddrock.common.mail;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import javax.mail.MessagingException;
+
 
 /**
  * 发出的邮件
@@ -139,4 +142,17 @@ public class MailSentExt {
 		contentEncoding = "text/html;charset=UTF-8";
 		sendTime = new Date();
 	}
+	
+	public static void main(String[] args) throws UnsupportedEncodingException, MessagingException {
+		String recverAccounts = "接收方账号";
+		String senderAccount = "发送方QQ邮箱账号";
+		String senderPasswd = "发送方QQ邮箱授权码";
+		String smtpPort = "发送方QQ邮箱SMTP端口号";
+		Set<File> attach = new HashSet<File>();
+		attach.add(new File("C:\\Users\\oddro\\Desktop\\test.log"));
+		attach.add(new File("C:\\Users\\oddro\\Desktop\\落地思路v0.4-qzfeng - 副本.xlsx"));
+		attach.add(new File("C:\\Users\\oddro\\Desktop\\2017信息安全体系培训材料.pptx"));
+		MailSenderExt.sendEmail(senderAccount, senderPasswd, recverAccounts, "很好就这样", "明晚去吃饭", true, smtpPort, attach);
+	}
+
 }
