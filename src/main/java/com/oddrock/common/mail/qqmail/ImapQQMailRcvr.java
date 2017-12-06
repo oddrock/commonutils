@@ -3,11 +3,8 @@ package com.oddrock.common.mail.qqmail;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
 import org.apache.log4j.Logger;
-
 import com.oddrock.common.Prop;
-import com.oddrock.common.file.FileUtils;
 import com.oddrock.common.mail.ImapMailRcvr;
 import com.oddrock.common.mail.MailRecv;
 import com.oddrock.common.mail.MailRecvAttach;
