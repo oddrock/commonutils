@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.oddrock.common.Prop;
 import com.oddrock.common.file.FileUtils;
 import com.oddrock.common.mail.ImapMailRcvr;
 import com.oddrock.common.mail.MailRecv;
@@ -61,5 +62,15 @@ public class ImapQQMailRcvr {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static void main(String[] args) throws Exception{
+		String imapserver = Prop.get("qqmail.imapserver");
+		String account = Prop.get("qqmail.account"); 
+		String passwd = Prop.get("qqmail.passwd"); 
+		String foldername = Prop.get("qqmail.foldername"); 
+		boolean readwrite = Prop.getBool("qqmail.readwrite");
+		String savefolder = Prop.get("qqmail.savefolder"); 
+		new ImapQQMailRcvr().rcvMail(imapserver, account, passwd, foldername, readwrite, true, savefolder);
 	}
 }

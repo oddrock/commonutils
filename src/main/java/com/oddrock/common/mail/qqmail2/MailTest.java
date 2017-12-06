@@ -15,10 +15,8 @@ public class MailTest
     /**
      * @param args
      */
-    public static void main(String[] args)
-    {
-        try
-        {
+    public static void main(String[] args){
+        try{
             String host = "pop.qq.com";
             String username = "QQ邮箱名";
             String password = "QQ邮箱授权码";
@@ -40,14 +38,10 @@ public class MailTest
             Message message[] = folder.getMessages();
             System.out.println("邮件数量:　" + message.length);
             new GetMailInfoThread(message).start();
-        }
-        catch (NoSuchProviderException e)
-        {
+        }catch (NoSuchProviderException e){
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        catch (MessagingException e)
-        {
+        }catch (MessagingException e){
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

@@ -69,9 +69,8 @@ public class ImapMailRcvr{
 				Flags flags = message.getFlags(); 
 				if (!flags.contains(Flags.Flag.SEEN)){
 					logger.warn("开始解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
-					/*logger.warn(message.getContent());
-					logger.warn(message.getFileName());*/
 					MimeMessageParser parser = new MimeMessageParser((MimeMessage) message).parse();
+					logger.warn("结束解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
 					MailRecv mail = new MailRecv();
 					mails.add(mail);
 					mail.init(parser);
@@ -86,14 +85,16 @@ public class ImapMailRcvr{
 							dir.mkdirs();
 							String filePath =  new File(dir,ds.getName()).getCanonicalPath();
 							attachment.setLocalFilePath(filePath);
-							downloadAttachToLocal(ds, filePath);							
+							logger.warn("开始下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
+							downloadAttachToLocal(ds, filePath);	
+							logger.warn("结束下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
 						}
 					}
 					logger.warn("邮件内容："+mail.getPlainContent());
 					for(MailRecvAttach attach : mail.getAttachments()) {
 						logger.warn("附件："+attach.getName());
 					}			
-					logger.warn("结束解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
+					
 				}	
 			}
 			if(mails.size()==0){

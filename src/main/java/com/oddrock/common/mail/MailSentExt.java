@@ -5,7 +5,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.mail.MessagingException;
+
+import com.oddrock.common.Prop;
 
 
 /**
@@ -144,10 +147,10 @@ public class MailSentExt {
 	}
 	
 	public static void main(String[] args) throws UnsupportedEncodingException, MessagingException {
-		String recverAccounts = "接收方账号";
-		String senderAccount = "发送方QQ邮箱账号";
-		String senderPasswd = "发送方QQ邮箱授权码";
-		String smtpPort = "发送方QQ邮箱SMTP端口号";
+		String recverAccounts = Prop.get("mail.recver.accounts");
+		String senderAccount = Prop.get("qqmail.account");
+		String senderPasswd = Prop.get("qqmail.passwd");
+		String smtpPort = Prop.get("qqmail.smtpport");
 		Set<File> attach = new HashSet<File>();
 		attach.add(new File("C:\\Users\\oddro\\Desktop\\test.log"));
 		attach.add(new File("C:\\Users\\oddro\\Desktop\\落地思路v0.4-qzfeng - 副本.xlsx"));
