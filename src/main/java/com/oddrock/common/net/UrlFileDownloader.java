@@ -2,18 +2,11 @@ package com.oddrock.common.net;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.Properties;
-
-import javax.mail.Authenticator;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -22,7 +15,6 @@ import org.apache.log4j.Logger;
  * @author oddrock
  *
  */
-@SuppressWarnings("unused")
 public class UrlFileDownloader {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(UrlFileDownloader.class);
@@ -53,7 +45,7 @@ public class UrlFileDownloader {
 		if (!saveDir.exists()) {
 			saveDir.mkdir();
 		}
-		File file = new File(saveDir + File.separator + fileName);
+		File file = new File(saveDir, fileName);
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.write(getData);
 		if (fos != null) {

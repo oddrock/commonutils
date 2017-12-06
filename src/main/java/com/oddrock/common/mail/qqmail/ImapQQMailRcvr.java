@@ -46,18 +46,19 @@ public class ImapQQMailRcvr {
 	 */
 	private void downloadQQFileInMail(MailRecv mail, String localAttachFolderPath) {
 		List<QQFileDownloadPage> list = QQFileDownloader.parseQQFileDownloadPageFromQQMail(mail.getPlainContent());
-		for(QQFileDownloadPage url : list){	
+		for(QQFileDownloadPage page : list){	
 			try {
-				String qqFileUrl = QQFileDownloader.parseQQFileDownloadUrlsFromQQFileDownloadPage(url.getPageUrl()).get(0);
-				logger.warn("开始下载【"+mail.getFrom()+"】主题为【"+mail.getSubject()+"】的邮件中的QQ中转站文件：【" + url.getFileName() + " | " + qqFileUrl+"】");
-				String dirpath = localAttachFolderPath+File.separator+mail.getFrom();
-				FileUtils.mkdirIfNotExists(dirpath);
-				UrlFileDownloader.downLoadFromUrl(qqFileUrl, url.getFileName(), dirpath);
+				String qqFileUrl = QQFileDownloader.parseQQFileDownloadUrlsFromQQFileDownloadPage(page.getPageUrl()).get(0);
+				logger.warn("开始下载【"+mail.getFrom()+"】主题为【"+mail.getSubject()+"】的邮件中的QQ中转站文件：【" + page.getFileName() + " | " + qqFileUrl+"】");
+				File attachSaveDir = new File(localAttachFolderPath, mail.getFrom());
+				attachSaveDir.mkdirs();
+				UrlFileDownloader.downLoadFromUrl(qqFileUrl, page.getFileName(), attachSaveDir.getCanonicalPath());
 				MailRecvAttach ea = new MailRecvAttach();
-				ea.setName(url.getFileName());
-				ea.setLocalFilePath(localAttachFolderPath + File.separator + url.getFileName());
+				ea.setName(page.getFileName());
+				File file = new File(attachSaveDir, page.getFileName());
+				ea.setLocalFilePath(file.getCanonicalPath());
 				mail.getAttachments().add(ea);
-				logger.warn("结束下载【"+mail.getFrom()+"】主题为【"+mail.getSubject()+"】的邮件中的QQ中转站文件：【" + url.getFileName() + " | " + qqFileUrl+"】");
+				logger.warn("结束下载【"+mail.getFrom()+"】主题为【"+mail.getSubject()+"】的邮件中的QQ中转站文件：【" + page.getFileName() + " | " + qqFileUrl+"】");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

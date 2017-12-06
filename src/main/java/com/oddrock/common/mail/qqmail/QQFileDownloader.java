@@ -18,7 +18,10 @@ public class QQFileDownloader {
 	public static List<QQFileDownloadPage> parseQQFileDownloadPageFromQQMail(String mailContent){
 		logger.warn("开始从邮件解析QQ文件中转站的下载页面地址...");
 		List<QQFileDownloadPage> list = new ArrayList<QQFileDownloadPage>();
-		if(mailContent==null || !mailContent.contains("从QQ邮箱发来的超大附件")) return list;
+		if(mailContent==null || !mailContent.contains("从QQ邮箱发来的超大附件")) {
+			logger.warn("结束从邮件解析QQ文件中转站的下载页面地址：没有超大附件...");
+			return list;
+		}
 		String pattern = ".*从QQ邮箱发来的超大附件([\\s\\S]*)";
     	Pattern p = Pattern.compile(pattern);
 		Matcher m = p.matcher(mailContent);
