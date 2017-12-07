@@ -2,7 +2,7 @@ package com.oddrock.common;
 
 import com.oddrock.common.prop.PropertiesReader;
 
-public class Prop {
+public class CommonProp {
 	private static final PropertiesReader PR = new PropertiesReader();
 	static{
 		load();

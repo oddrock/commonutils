@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.log4j.Logger;
-import com.oddrock.common.Prop;
+import com.oddrock.common.CommonProp;
 import com.oddrock.common.mail.ImapMailRcvr;
 import com.oddrock.common.mail.MailRecv;
 import com.oddrock.common.mail.MailRecvAttach;
@@ -63,12 +63,12 @@ public class ImapQQMailRcvr {
 	}
 	
 	public static void main(String[] args) throws Exception{
-		String imapserver = Prop.get("qqmail.imapserver");
-		String account = Prop.get("qqmail.account"); 
-		String passwd = Prop.get("qqmail.passwd"); 
-		String foldername = Prop.get("qqmail.foldername"); 
-		boolean readwrite = Prop.getBool("qqmail.readwrite");
-		String savefolder = Prop.get("qqmail.savefolder"); 
+		String imapserver = CommonProp.get("qqmail.imapserver");
+		String account = CommonProp.get("qqmail.account"); 
+		String passwd = CommonProp.get("qqmail.passwd"); 
+		String foldername = CommonProp.get("qqmail.foldername"); 
+		boolean readwrite = CommonProp.getBool("qqmail.readwrite");
+		String savefolder = CommonProp.get("qqmail.savefolder"); 
 		new ImapQQMailRcvr().rcvMail(imapserver, account, passwd, foldername, readwrite, true, savefolder);
 	}
 }

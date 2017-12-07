@@ -40,6 +40,12 @@ public class ImapMailRcvr{
 	public List<MailRecv> rcvMail(String imapServer, String mailAccount, 
 			String mailPasswd, String folderName, boolean readwriteFlag,
 			boolean downloadAttachToLocal, String localAttachFolderPath) throws Exception {
+		return rcvMail(imapServer, mailAccount, mailPasswd, folderName, readwriteFlag, downloadAttachToLocal, localAttachFolderPath, new FromMailAttachDownloadDirGenerator());
+	}
+	
+	public List<MailRecv> rcvMail(String imapServer, String mailAccount, 
+			String mailPasswd, String folderName, boolean readwriteFlag,
+			boolean downloadAttachToLocal, String localAttachDirPath, AttachDownloadDirGenerator generator) throws Exception {
 		logger.warn("开始接收邮箱【"+mailAccount+"】中的邮件...");
 		Properties props = new Properties();
 		props.put("mail.imap.host", imapServer);
@@ -81,7 +87,7 @@ public class ImapMailRcvr{
 						attachment.setContentType(ds.getContentType());
 						attachment.setName(ds.getName());	
 						if(downloadAttachToLocal){
-							File dir = new File(localAttachFolderPath, mail.getFrom());
+							File dir = generator.generateDir(new File(localAttachDirPath), mail);
 							dir.mkdirs();
 							String filePath =  new File(dir,ds.getName()).getCanonicalPath();
 							attachment.setLocalFilePath(filePath);
