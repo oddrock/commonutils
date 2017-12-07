@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.oddrock.common.net.WebUtils;
 
-
+@Deprecated
 public class QQFileDownloader {
 	private static Logger logger = Logger.getLogger(QQFileDownloader.class);
 	/**
