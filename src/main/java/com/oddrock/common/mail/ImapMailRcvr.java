@@ -45,7 +45,7 @@ public class ImapMailRcvr{
 	
 	public List<MailRecv> rcvMail(String imapServer, String mailAccount, 
 			String mailPasswd, String folderName, boolean readwriteFlag,
-			boolean downloadAttachToLocal, String localAttachDirPath, AttachDownloadDirGenerator generator) throws Exception {
+			boolean downloadAttachToLocal, String localAttachDirPath, AttachDownloadDirGenerator generator) throws Exception{
 		logger.warn("开始接收邮箱【"+mailAccount+"】中的邮件...");
 		Properties props = new Properties();
 		props.put("mail.imap.host", imapServer);
