@@ -11,7 +11,7 @@ public class GeneralAttachDownloadDirGenerator implements AttachDownloadDirGener
 		String separator = "]--[";
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
 		String dateStr = format.format(new Date());
-		String lastDirName = dateStr + separator + mail.getFrom() + separator + mail.getSubject();
+		String lastDirName = dateStr + separator + mail.getFromNick() + separator + mail.getFrom() + separator + mail.getSubject();
 		return new File(baseDir, lastDirName);
 	}
 

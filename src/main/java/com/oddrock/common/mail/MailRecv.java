@@ -13,6 +13,7 @@ import org.apache.commons.mail.util.MimeMessageParser;
  */
 public class MailRecv {
 	private String from;
+	private String fromNick;
 	private List<Address> cc = new ArrayList<Address>();
 	private List<Address> to = new ArrayList<Address>();
 	private String replyTo;
@@ -28,6 +29,12 @@ public class MailRecv {
 		this.setSubject(parser.getSubject());
 		this.setHtmlContent(parser.getHtmlContent());
 		this.setPlainContent(parser.getPlainContent());
+	}
+	public String getFromNick() {
+		return fromNick;
+	}
+	public void setFromNick(String fromNick) {
+		this.fromNick = fromNick;
 	}
 	public String getFrom() {
 		return from;

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
 import javax.activation.DataSource;
 import javax.mail.Authenticator;
 import javax.mail.Flags;
@@ -17,8 +18,11 @@ import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
+
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.apache.log4j.Logger;
+
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
 
@@ -80,6 +84,9 @@ public class ImapMailRcvr{
 					MailRecv mail = new MailRecv();
 					mails.add(mail);
 					mail.init(parser);
+					String fromDecode = MimeUtility.decodeText(message.getFrom()[0].toString());
+					String fromNick = fromDecode.replaceAll("<"+mail.getFrom()+">", "").trim();
+					mail.setFromNick(fromNick);
 					List<DataSource> attachments = parser.getAttachmentList(); // 获取附件，并写入磁盘
 					for (DataSource ds : attachments) {
 						MailRecvAttach attachment = new MailRecvAttach();
