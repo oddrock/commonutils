@@ -9,7 +9,7 @@ public class GeneralAttachDownloadDirGenerator implements AttachDownloadDirGener
 	// 目录的格式是<时间字符串>-==-发件人邮箱地址-==-邮件主题
 	public File generateDir(File baseDir, MailRecv mail) {
 		String separator = "]--[";
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd"); 
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
 		String dateStr = format.format(new Date());
 		String lastDirName = dateStr + separator + mail.getFrom() + separator + mail.getSubject();
 		return new File(baseDir, lastDirName);
