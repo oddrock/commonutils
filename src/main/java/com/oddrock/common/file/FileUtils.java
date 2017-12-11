@@ -298,6 +298,8 @@ public class FileUtils {
 	 */
 	public static void gatherAllFiles(String srcDirPath, String dstDirPath, boolean remainFlag) {
 		mkDirRecursively(dstDirPath); // 创建目标目录
+		File dstDir = new File(dstDirPath);
+		dstDir.mkdirs();
 		for (String filePath : getAbsolutePathRecursively(srcDirPath)) {
 			String newFilePath = renameFileByAdd(filePath, dstDirPath, null);
 			if (remainFlag) {
@@ -306,6 +308,10 @@ public class FileUtils {
 				new File(filePath).renameTo(new File(newFilePath));
 			}
 		}
+	}
+	
+	public static void gatherAllFiles(String srcDirPath, boolean remainFlag) {
+		gatherAllFiles(srcDirPath, srcDirPath, remainFlag);
 	}
 
 	/**
@@ -429,7 +435,12 @@ public class FileUtils {
 		 * getAllFilesAbsoultePathRecursively("C:\\Users\\oddro\\Desktop\\熊逸书院" )){
 		 * System.out.println(path); }
 		 */
-		//gatherAllFiles("C:\\_Download\\薛兆丰经济学课", "C:\\_Download\\得到\\薛兆丰经济学课", true);
+		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\伯凡日知录", false);
+		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\超级个体", false);
+		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\关系攻略", false);
+		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\宁向东清华管理课", false);
+		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\武志红心理学", false);
+		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\卓老板聊科技（第一季）", false);
 		/*
 		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\关系攻略",
 		 * "C:\\Users\\oddro\\Desktop\\得到\\关系攻略", true);
@@ -444,7 +455,7 @@ public class FileUtils {
 			System.out.println(getEncoding(file));
 		}*/
 		
-		File  file = new File("C:\\_Download");  
+		/*File  file = new File("C:\\_Download");  
 		deleteHiddenFiles(file);
         File[] files = file.listFiles(); 
         System.out.println("第一遍");
@@ -459,7 +470,7 @@ public class FileUtils {
         	if(f.isFile() && f.isHidden()){
         		System.out.println(f);
         	}  
-        } 
+        }*/ 
 	}
 
 }
