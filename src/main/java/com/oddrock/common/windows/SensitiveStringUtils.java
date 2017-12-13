@@ -14,6 +14,7 @@ public class SensitiveStringUtils {
 		srcStr = srcStr.replace("<", " ");
 		srcStr = srcStr.replace(">", " ");
 		srcStr = srcStr.replace("|", " ");
+		srcStr = srcStr.replace(";", "；");
 		return srcStr;
 	}
 }

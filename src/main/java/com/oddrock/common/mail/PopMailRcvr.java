@@ -91,7 +91,7 @@ public class PopMailRcvr{
 			int i = 1;
 			for (Message message : messages) {  
 				if(PopMailReadRecordManager.instance.isRead(account, (POP3Folder)folder, message)) {
-					logger.error("之前已阅读，本次不再下载："+((POP3Folder)folder).getUID(message));
+					logger.info("之前已阅读，本次不再下载："+((POP3Folder)folder).getUID(message));
 					continue;
 				}
 				logger.error("第"+i+"封未读邮件：");
@@ -115,7 +115,7 @@ public class PopMailRcvr{
 						File dir = generator.generateDir(new File(localAttachDirPath), mail);
 						dir.mkdirs();
 						if(ds.getName()!=null){
-							String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(ds.getName())).getCanonicalPath();
+							String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(ds.getName().trim())).getCanonicalPath();
 							attachment.setLocalFilePath(filePath);
 							logger.warn("开始下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
 							downloadAttachToLocal(ds, filePath);	
@@ -195,5 +195,8 @@ public class PopMailRcvr{
 		String localAttachDirPath = CommonProp.get("mail.savefolder");
 		AttachDownloadDirGenerator generator = new GeneralAttachDownloadDirGenerator();
 		new PopMailRcvr().rcvMail(server,account,passwd,folderName,readwriteFlag,downloadAttachToLocal,localAttachDirPath,generator);
+		/*String str = "2017-12-14]--[ypt]--[wcycmx@sohu.com]--[全国各地数据-做市场必看数据；q q nu：174－918－2004 ； ＭＯＢ：１８２１－３８９４－６８０   ";
+		File file = new File(localAttachDirPath, str);
+		System.out.println(file.getCanonicalPath());*/
 	}
 }
