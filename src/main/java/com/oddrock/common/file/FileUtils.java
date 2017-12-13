@@ -426,6 +426,21 @@ public class FileUtils {
         }
 	}
 	
+	// 删除目录及目录下所有文件
+	public static void deleteDirAndAllFiles(File dir) throws IOException {
+		if(dir==null || !dir.exists()) return;
+		if(dir.isFile()) {
+			dir.delete();
+			return;
+		}
+		for(File file : dir.listFiles()) {
+			if(file==null || !file.exists()) {
+				return;
+			}
+			deleteDirAndAllFiles(file);
+		}
+		dir.delete();
+	}
 	 
 
 	public static void main(String[] args) throws IOException {
