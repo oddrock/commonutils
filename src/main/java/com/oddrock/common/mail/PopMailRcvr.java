@@ -20,6 +20,7 @@ import javax.mail.Store;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.apache.log4j.Logger;
 
@@ -92,12 +93,7 @@ public class PopMailRcvr{
 				i++;
 				logger.warn("开始解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
 				MimeMessageParser parser = null;
-				try{
-					parser = new MimeMessageParser((MimeMessage) message).parse();
-				}catch(com.sun.mail.util.DecodingException e){
-					e.printStackTrace();
-					continue;
-				}
+				parser = new MimeMessageParser((MimeMessage) message).parse();
 				logger.warn("结束解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
 				MailRecv mail = new MailRecv();
 				mails.add(mail);
@@ -114,7 +110,8 @@ public class PopMailRcvr{
 					if(downloadAttachToLocal){
 						File dir = generator.generateDir(new File(localAttachDirPath), mail);
 						dir.mkdirs();
-						if(ds.getName()!=null){
+						if(!StringUtils.isBlank(ds.getName())){
+							System.out.println(ds.getName());
 							String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(ds.getName().trim())).getCanonicalPath();
 							attachment.setLocalFilePath(filePath);
 							logger.warn("开始下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
