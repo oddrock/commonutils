@@ -98,6 +98,8 @@ public class PopMailRcvr{
 				MailRecv mail = new MailRecv();
 				mails.add(mail);
 				mail.init(parser);
+				mail.setMailAccount(account);
+				mail.setUID(((POP3Folder)folder).getUID(message));
 				String fromDecode = MimeUtility.decodeText(message.getFrom()[0].toString());
 				String fromNick = fromDecode.replaceAll("<"+mail.getFrom()+">", "").trim();
 				mail.setFromNick(fromNick);

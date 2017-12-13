@@ -12,6 +12,8 @@ import org.apache.commons.mail.util.MimeMessageParser;
  *
  */
 public class MailRecv {
+	private String mailAccount;
+	private String UID;
 	private String from;
 	private String fromNick;
 	private List<Address> cc = new ArrayList<Address>();
@@ -29,6 +31,18 @@ public class MailRecv {
 		this.setSubject(parser.getSubject());
 		this.setHtmlContent(parser.getHtmlContent());
 		this.setPlainContent(parser.getPlainContent());
+	}
+	public String getMailAccount() {
+		return mailAccount;
+	}
+	public void setMailAccount(String mailAccount) {
+		this.mailAccount = mailAccount;
+	}
+	public String getUID() {
+		return UID;
+	}
+	public void setUID(String uID) {
+		UID = uID;
 	}
 	public String getFromNick() {
 		return fromNick;

@@ -62,6 +62,20 @@ public class PopMailReadRecordManager {
 		FileUtils.writeToFile(file.getCanonicalPath(), sb.toString(), false);
 	}
 	
+	public void setUnRead(String account, String UID) throws MessagingException, IOException{
+		Set<String> set = readMailUIDsMap.get(account);
+		if(set==null){
+			return;
+		}
+		set.remove(UID);
+		StringBuffer sb = new StringBuffer();
+		for(String str : set){
+			if(!StringUtils.isBlank(str)) sb.append(str).append(",");
+		}
+		File file = new File(CommonProp.get("mail.readrecordfile.dirpath"), account+CommonProp.get("mail.readrecordfile.suffix"));
+		FileUtils.writeToFile(file.getCanonicalPath(), sb.toString(), false);
+	}
+	
 	public boolean isRead(String account, POP3Folder folder, Message message) throws MessagingException{
 		String UID = folder.getUID(message);
 		if(!readMailUIDsMap.containsKey(account)){
