@@ -52,12 +52,6 @@ public class PopMailRcvr{
 			String passwd, String folderName, boolean readwriteFlag,
 			boolean downloadAttachToLocal, String localAttachDirPath, AttachDownloadDirGenerator generator) throws Exception{
 		logger.warn("开始接收邮箱【"+account+"】中的邮件...");
-		   
-		           
-		
-		        
-		           
-		
 		Properties props = new Properties();
 		final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 		props.setProperty("mail.pop3.socketFactory.class", SSL_FACTORY);
@@ -97,7 +91,13 @@ public class PopMailRcvr{
 				logger.error("第"+i+"封未读邮件：");
 				i++;
 				logger.warn("开始解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
-				MimeMessageParser parser = new MimeMessageParser((MimeMessage) message).parse();
+				MimeMessageParser parser = null;
+				try{
+					parser = new MimeMessageParser((MimeMessage) message).parse();
+				}catch(com.sun.mail.util.DecodingException e){
+					e.printStackTrace();
+					continue;
+				}
 				logger.warn("结束解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
 				MailRecv mail = new MailRecv();
 				mails.add(mail);
