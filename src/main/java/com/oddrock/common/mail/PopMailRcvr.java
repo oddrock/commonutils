@@ -24,6 +24,7 @@ import org.apache.commons.mail.util.MimeMessageParser;
 import org.apache.log4j.Logger;
 
 import com.oddrock.common.CommonProp;
+import com.oddrock.common.windows.SensitiveStringUtils;
 import com.sun.mail.pop3.POP3Folder;
 
 public class PopMailRcvr{
@@ -114,7 +115,7 @@ public class PopMailRcvr{
 						File dir = generator.generateDir(new File(localAttachDirPath), mail);
 						dir.mkdirs();
 						if(ds.getName()!=null){
-							String filePath =  new File(dir,ds.getName()).getCanonicalPath();
+							String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(ds.getName())).getCanonicalPath();
 							attachment.setLocalFilePath(filePath);
 							logger.warn("开始下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
 							downloadAttachToLocal(ds, filePath);	
