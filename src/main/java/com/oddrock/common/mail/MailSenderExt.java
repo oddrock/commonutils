@@ -31,7 +31,7 @@ public class MailSenderExt {
 		logger.warn("开始邮件准备工作...");
 		Properties props = new Properties();                    
 	    props.setProperty("mail.transport.protocol", emailSent.getProtocol());   
-	    props.setProperty("mail.smtp.host", emailSent.getSmtpHost());  
+	    props.setProperty("mail.smtp.host", emailSent.getSmtpHost());   
 	    props.setProperty("mail.smtp.auth", String.valueOf(emailSent.isSmtpAuth())); 
 	    if(emailSent.getSmtpPort()!=null){
 	    	props.setProperty("mail.smtp.port", emailSent.getSmtpPort()); 
@@ -93,7 +93,7 @@ public class MailSenderExt {
 	}
 	
 	public static void sendEmail(String senderAccount, String senderPasswd, 
-			String recverAccounts, String subject, String content, boolean smtpAuth, String smtpPort, Collection<File> attach) 
+			String recverAccounts, String subject, String content, boolean smtpAuth, String smtpHost, String smtpPort, Collection<File> attach) 
 			throws UnsupportedEncodingException, MessagingException{
 		String[] recvers = recverAccounts.split(",");
 		MailSentExt emailSent = new MailSentExt();
@@ -102,6 +102,7 @@ public class MailSenderExt {
 				emailSent.addrecverAccount(recver.trim());
 			}
 		}
+		emailSent.setSmtpHost(smtpHost);
 		emailSent.setSubject(subject);
 		emailSent.setContent(content);
 		emailSent.setSenderAccount(senderAccount);
