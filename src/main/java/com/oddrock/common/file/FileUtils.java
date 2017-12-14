@@ -435,11 +435,39 @@ public class FileUtils {
 		}
 		for(File file : dir.listFiles()) {
 			if(file==null || !file.exists()) {
-				return;
+				continue;
+			}else if(file.isFile()) {
+				file.delete();
+				continue;
+			}else {
+				deleteDirAndAllFiles(file);
 			}
-			deleteDirAndAllFiles(file);
 		}
 		dir.delete();
+	}
+	
+	// 清空目录
+	public static void clearDir(File dir) {
+		if(dir==null || !dir.exists() || !dir.isDirectory()) return;
+		for(File file : dir.listFiles()) {
+			if(file==null || !file.exists()) continue;
+			if(file.isFile()) {
+				file.delete();
+			}else if(file.isDirectory()) {
+				clearDir(file);
+				file.delete();
+			}
+		}
+		dir.delete();
+	}
+	
+	public static void copyDirToParentDir(File srcDir, File dstParentDir) throws IOException {
+		File dstDir = new File(dstParentDir, srcDir.getName());
+		dstDir.mkdirs();
+		for(File file : srcDir.listFiles()) {
+			File dstFile = new File(dstDir, file.getName());
+			copyFile(file.getCanonicalPath(), dstFile.getCanonicalPath());
+		}
 	}
 	 
 
