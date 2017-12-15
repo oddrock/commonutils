@@ -82,15 +82,15 @@ public class PopMailRcvr{
 			}
 			logger.warn("已打开【"+folderName+"】邮箱");
 			Message[] messages = folder.getMessages();  
-			logger.error("共有"+messages.length+"封邮件");
-			logger.error("开始读取所有未读邮件...");
+			logger.warn("共有"+messages.length+"封邮件");
+			logger.warn("开始读取所有未读邮件...");
 			int i = 1;
 			for (Message message : messages) {  
 				if(PopMailReadRecordManager.instance.isRead(account, (POP3Folder)folder, message)) {
 					logger.info("之前已阅读，本次不再下载："+((POP3Folder)folder).getUID(message));
 					continue;
 				}
-				logger.error("第"+i+"封未读邮件：");
+				logger.warn("第"+i+"封未读邮件：");
 				i++;
 				logger.warn("开始解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
 				MimeMessageParser parser = null;
@@ -178,15 +178,15 @@ public class PopMailRcvr{
 			}
 			logger.warn("已打开【"+folderName+"】邮箱");
 			Message[] messages = folder.getMessages();  
-			logger.error("共有"+messages.length+"封邮件");
-			logger.error("开始读取所有未读邮件...");
+			logger.warn("共有"+messages.length+"封邮件");
+			logger.warn("开始读取所有未读邮件...");
 			int i = 1;
 			for (Message message : messages) {  
 				if(PopMailReadRecordManager.instance.isRead(account, (POP3Folder)folder, message)) {
 					logger.info("之前已阅读，本次不再下载："+((POP3Folder)folder).getUID(message));
 					continue;
 				}
-				logger.error("第"+i+"封未读邮件：");
+				logger.warn("第"+i+"封未读邮件：");
 				i++;
 				logger.warn("开始解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
 				MimeMessageParser parser = null;

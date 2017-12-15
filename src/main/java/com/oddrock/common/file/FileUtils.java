@@ -461,13 +461,14 @@ public class FileUtils {
 		dir.delete();
 	}
 	
-	public static void copyDirToParentDir(File srcDir, File dstParentDir) throws IOException {
+	public static File copyDirToParentDir(File srcDir, File dstParentDir) throws IOException {
 		File dstDir = new File(dstParentDir, srcDir.getName());
 		dstDir.mkdirs();
 		for(File file : srcDir.listFiles()) {
 			File dstFile = new File(dstDir, file.getName());
 			copyFile(file.getCanonicalPath(), dstFile.getCanonicalPath());
 		}
+		return dstDir;
 	}
 	 
 
