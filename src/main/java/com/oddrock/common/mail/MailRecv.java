@@ -1,8 +1,11 @@
 package com.oddrock.common.mail;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.internet.MimeUtility;
 
 import org.apache.commons.mail.util.MimeMessageParser;
 
@@ -12,6 +15,7 @@ import org.apache.commons.mail.util.MimeMessageParser;
  *
  */
 public class MailRecv {
+	private Date sentDate;		// 邮件发送时间
 	private String mailAccount;
 	private String UID;
 	private String from;
@@ -31,6 +35,23 @@ public class MailRecv {
 		this.setSubject(parser.getSubject());
 		this.setHtmlContent(parser.getHtmlContent());
 		this.setPlainContent(parser.getPlainContent());
+		this.sentDate = new Date();
+	}
+	public void init(MimeMessageParser parser, Message message) throws Exception{
+		init(parser);
+		if(message.getSentDate()!=null) {
+			this.sentDate = message.getSentDate();
+		}else {
+			this.sentDate = new Date();
+		}
+		String fromDecode = MimeUtility.decodeText(message.getFrom()[0].toString());
+		this.fromNick = fromDecode.replaceAll("<"+this.from+">", "").trim();
+	}
+	public Date getSentDate() {
+		return sentDate;
+	}
+	public void setSentDate(Date sentDate) {
+		this.sentDate = sentDate;
 	}
 	public String getMailAccount() {
 		return mailAccount;

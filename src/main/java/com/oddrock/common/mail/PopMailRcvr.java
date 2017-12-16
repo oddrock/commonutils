@@ -193,12 +193,9 @@ public class PopMailRcvr{
 				parser = new MimeMessageParser((MimeMessage) message).parse();
 				logger.warn("结束解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
 				mail = new MailRecv();
-				mail.init(parser);
+				mail.init(parser, message);
 				mail.setMailAccount(account);
 				mail.setUID(((POP3Folder)folder).getUID(message));
-				String fromDecode = MimeUtility.decodeText(message.getFrom()[0].toString());
-				String fromNick = fromDecode.replaceAll("<"+mail.getFrom()+">", "").trim();
-				mail.setFromNick(fromNick);
 				List<DataSource> attachments = parser.getAttachmentList(); // 获取附件，并写入磁盘
 				for (DataSource ds : attachments) {
 					MailRecvAttach attachment = new MailRecvAttach();
