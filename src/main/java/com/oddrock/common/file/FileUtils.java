@@ -470,6 +470,22 @@ public class FileUtils {
 		}
 		return dstDir;
 	}
+	
+	public static File mvDirToParentDir(File srcDir, File dstParentDir) throws IOException {
+		File dstDir = new File(dstParentDir, srcDir.getName());
+		dstDir.mkdirs();
+		for(File file : srcDir.listFiles()) {
+			if(file.isFile()) {
+				File dstFile = new File(dstDir, file.getName());
+				dstFile.delete();
+				file.renameTo(dstFile);
+			}else if(file.isDirectory()) {
+				mvDirToParentDir(file, dstDir);
+			}
+		}
+		srcDir.delete();
+		return dstDir;
+	}
 	 
 
 	public static void main(String[] args) throws IOException {
