@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Properties;
-
-import sun.misc.BASE64Encoder; 
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -19,10 +16,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-
+import javax.mail.internet.MimeUtility;
 import org.apache.log4j.Logger;
 
-@SuppressWarnings({ "restriction"})
 public class MailSenderExt {
 	private static Logger logger = Logger.getLogger(MailSenderExt.class);
 	
@@ -62,12 +58,12 @@ public class MailSenderExt {
 	    message.setSentDate(emailSent.getSendTime());	
 	    
 	    // 邮件内容部分
-	    MimeMultipart msgMultipart = new MimeMultipart("mixed");
+	    MimeMultipart msgMultipart = new MimeMultipart("related");
 	    message.setContent(msgMultipart);
 	    
 	    // 写入邮件正文
 	    MimeBodyPart content = new MimeBodyPart();
-	    content.setText(emailSent.getContent());  
+	    content.setContent(emailSent.getContent(), "text/html; charset=utf-8");  
 	    msgMultipart.addBodyPart(content);
 	    
 	    // 写入邮件附件
@@ -76,9 +72,10 @@ public class MailSenderExt {
 	    	DataSource ds = new FileDataSource(file);
 	 	    DataHandler dh = new DataHandler(ds);
 	 	    attch.setDataHandler(dh);
-	 	    BASE64Encoder enc = new BASE64Encoder(); 
+	 	    //BASE64Encoder enc = new BASE64Encoder(); 
 	 	    // 防止附件名有中文乱码
-	 	    attch.setFileName("=?GBK?B?" + enc.encode(file.getName().getBytes("GBK")) + "?=");
+	 	    //attch.setFileName("=?GBK?B?" + enc.encode(file.getName().getBytes("GBK")) + "?=");
+	 	    attch.setFileName(MimeUtility.encodeText(file.getName()));
 	    	msgMultipart.addBodyPart(attch);
 	    }
 	    
