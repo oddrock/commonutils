@@ -89,7 +89,7 @@ public class MailSenderExt {
 	    logger.warn("完成发送邮件...");
 	}
 	
-	public static void sendEmail(String senderAccount, String senderPasswd, 
+	public static void sendEmail(String senderAccount, String senderName, String senderPasswd, 
 			String recverAccounts, String subject, String content, boolean smtpAuth, String smtpHost, String smtpPort, Collection<File> attach) 
 			throws UnsupportedEncodingException, MessagingException{
 		String[] recvers = recverAccounts.split(",");
@@ -105,6 +105,7 @@ public class MailSenderExt {
 		emailSent.setSenderAccount(senderAccount);
 		emailSent.setSenderPasswd(senderPasswd);
 		emailSent.setSmtpAuth(smtpAuth);
+		emailSent.setSenderName(senderName);
 		if(smtpPort!=null){
 			emailSent.setSmtpPort(smtpPort);
 		}

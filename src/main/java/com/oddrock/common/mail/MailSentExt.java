@@ -156,7 +156,7 @@ public class MailSentExt {
 		attach.add(new File("C:\\Users\\oddro\\Desktop\\test.log"));
 		attach.add(new File("C:\\Users\\oddro\\Desktop\\落地思路v0.4-qzfeng - 副本.xlsx"));
 		attach.add(new File("C:\\Users\\oddro\\Desktop\\2017信息安全体系培训材料.pptx"));
-		MailSenderExt.sendEmail(senderAccount, senderPasswd, recverAccounts, "很好就这样", "明晚去吃饭", true, smtpHost, smtpPort, attach);
+		MailSenderExt.sendEmail(senderAccount, null, senderPasswd, recverAccounts, "很好就这样", "明晚去吃饭", true, smtpHost, smtpPort, attach);
 	}
 
 }
