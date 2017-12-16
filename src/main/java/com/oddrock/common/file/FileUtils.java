@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -80,6 +81,32 @@ public class FileUtils {
 		StringBuffer sb = new StringBuffer();
 		try {
 			reader = new BufferedReader(new FileReader(file));
+			String tempString = null;
+			// 一次读入一行，直到读入null为文件结束
+			while ((tempString = reader.readLine()) != null) {
+				sb.append(tempString + "\n");
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e1) {
+				}
+			}
+		}
+		return sb.toString();
+	}
+	
+	public static String readFileContentToStrExt(String fileName) throws IOException {
+		File file = new File(fileName);
+		String encoding = getEncoding(file);
+		BufferedReader reader = null;
+		StringBuffer sb = new StringBuffer();
+		try {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding));
 			String tempString = null;
 			// 一次读入一行，直到读入null为文件结束
 			while ((tempString = reader.readLine()) != null) {
