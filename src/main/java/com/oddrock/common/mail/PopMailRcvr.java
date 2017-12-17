@@ -34,9 +34,9 @@ public class PopMailRcvr{
 	
 	/**
 	 * 接收邮件，并支持下载附件到本地
-	 * @param imapServer
-	 * @param mailAccount
-	 * @param mailPasswd
+	 * @param server
+	 * @param account
+	 * @param passwd
 	 * @param folderName
 	 * @param readwriteFlag
 	 * @param downloadAttachToLocal
@@ -44,26 +44,15 @@ public class PopMailRcvr{
 	 * @return
 	 * @throws Exception 
 	 */
-	public List<MailRecv> rcvMail(String imapServer, String mailAccount, 
-			String mailPasswd, String folderName, boolean readwriteFlag,
+	public List<MailRecv> rcvMail(String server, String account, String passwd, String folderName, 
 			boolean downloadAttachToLocal, String localAttachFolderPath) throws Exception {
-		return rcvMail(imapServer, mailAccount, mailPasswd, folderName, readwriteFlag, downloadAttachToLocal, localAttachFolderPath, new FromMailAttachDownloadDirGenerator());
+		return rcvMail(server, account, passwd, folderName, downloadAttachToLocal, localAttachFolderPath, new FromMailAttachDownloadDirGenerator());
 	}
 	
-	public List<MailRecv> rcvMail(String server, String account, 
-			String passwd, String folderName, boolean readwriteFlag,
-			boolean downloadAttachToLocal, String localAttachDirPath, 
+	public List<MailRecv> rcvMail(String server, String account, String passwd, 
+			String folderName, boolean downloadAttachToLocal, String localAttachDirPath, 
 			AttachDownloadDirGenerator generator) throws Exception{
-		logger.warn("开始接收邮箱【"+account+"】中的邮件...");
-		Properties props = new Properties();
-		final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
-		props.setProperty("mail.pop3.socketFactory.class", SSL_FACTORY);
-        props.setProperty("mail.pop3.socketFactory.fallback", "false");
-		props.put("mail.pop3.auth.plain.disable","true");        
-		props.put("mail.pop3.ssl.enable", "true"); 
-		props.put("mail.pop3.host", server);
-		props.put("mail.transport.protocol", "pop3"); 
-		Session session = Session.getDefaultInstance(props, getAuthenticator(account, passwd));	
+		Session session = createSession(server, account, passwd);	
 		Store store = null;
 		Folder folder = null;
 		List<MailRecv> mails = new ArrayList<MailRecv>();	
@@ -72,17 +61,11 @@ public class PopMailRcvr{
 			logger.warn("开始远程连接邮箱【"+account+"】...");
 			store.connect(server, account, passwd);
 			logger.warn("已远程连接上邮箱【"+account+"】...");
-			if(folderName==null){
-				folderName = "INBOX";
-			}
+			if(folderName==null) folderName = "INBOX";
 			folder = store.getFolder(folderName);
-			if(readwriteFlag){
-				folder.open(Folder.READ_WRITE);  
-			}else{
-				folder.open(Folder.READ_ONLY);    
-			}
+			folder.open(Folder.READ_WRITE);
 			logger.warn("已打开【"+folderName+"】邮箱");
-			Message[] messages = folder.getMessages();  
+			Message[] messages = folder.getMessages(); 
 			logger.warn("共有"+messages.length+"封邮件");
 			logger.warn("开始读取所有未读邮件...");
 			int i = 1;
@@ -93,60 +76,22 @@ public class PopMailRcvr{
 				}
 				logger.warn("第"+i+"封未读邮件：");
 				i++;
-				logger.warn("开始解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
-				MimeMessageParser parser = null;
-				parser = new MimeMessageParser((MimeMessage) message).parse();
-				logger.warn("结束解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
-				MailRecv mail = new MailRecv();
+				MailRecv mail = parseMail(message, account, folder, downloadAttachToLocal, localAttachDirPath, generator);
 				mails.add(mail);
-				mail.init(parser, message);
-				mail.setMailAccount(account);
-				mail.setUID(((POP3Folder)folder).getUID(message));
-				List<DataSource> attachments = parser.getAttachmentList(); // 获取附件，并写入磁盘
-				for (DataSource ds : attachments) {
-					MailRecvAttach attachment = new MailRecvAttach();
-					mail.getAttachments().add(attachment);
-					attachment.setContentType(ds.getContentType());
-					attachment.setName(ds.getName());	
-					if(downloadAttachToLocal){
-						File dir = generator.generateDir(new File(localAttachDirPath), mail);
-						dir.mkdirs();
-						if(!StringUtils.isBlank(ds.getName())){
-							System.out.println(ds.getName());
-							String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(ds.getName().trim())).getCanonicalPath();
-							attachment.setLocalFilePath(filePath);
-							logger.warn("开始下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
-							downloadAttachToLocal(ds, filePath);	
-							logger.warn("结束下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
-						}
-					}
-				}
 				PopMailReadRecordManager.instance.isReadInAllDays(account, (POP3Folder)folder, message);
-				if(CommonProp.getBool("mail.contentshow")){
-					logger.warn("开始显示邮件内容");
-					logger.warn(mail.getPlainContent());
-					logger.warn("结束显示邮件内容");	
-				}
 			}
 			if(mails.size()==0){
 				logger.warn("没有新邮件！");
 			}
 			logger.warn("结束读取所有未读邮件...");
 		} finally{
-			if (folder != null) {
-				folder.close(false);
-			}
-			if (store != null) {
-				store.close();
-			}
+			if (folder != null) folder.close(false);
+			if (store != null) store.close();
 		}
 		return mails;
 	}
-	
-	public MailRecv rcvOneUnreadMail(String server, String account, 
-			String passwd, String folderName, boolean readwriteFlag,
-			boolean downloadAttachToLocal, String localAttachDirPath, 
-			AttachDownloadDirGenerator generator) throws Exception{
+
+	private Session createSession(String server, String account, String passwd) {
 		logger.warn("开始接收邮箱【"+account+"】中的邮件...");
 		Properties props = new Properties();
 		final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
@@ -156,7 +101,15 @@ public class PopMailRcvr{
 		props.put("mail.pop3.ssl.enable", "true"); 
 		props.put("mail.pop3.host", server);
 		props.put("mail.transport.protocol", "pop3"); 
-		Session session = Session.getDefaultInstance(props, getAuthenticator(account, passwd));	
+		Session session = Session.getDefaultInstance(props, getAuthenticator(account, passwd));
+		return session;
+	}
+	
+	public MailRecv rcvOneUnreadMail(String server, String account, 
+			String passwd, String folderName, 
+			boolean downloadAttachToLocal, String localAttachDirPath, 
+			AttachDownloadDirGenerator generator) throws Exception{
+		Session session = createSession(server, account, passwd);	
 		Store store = null;
 		Folder folder = null;
 		MailRecv mail = null;
@@ -165,17 +118,11 @@ public class PopMailRcvr{
 			logger.warn("开始远程连接邮箱【"+account+"】...");
 			store.connect(server, account, passwd);
 			logger.warn("已远程连接上邮箱【"+account+"】...");
-			if(folderName==null){
-				folderName = "INBOX";
-			}
+			if(folderName==null) folderName = "INBOX";
 			folder = store.getFolder(folderName);
-			if(readwriteFlag){
-				folder.open(Folder.READ_WRITE);  
-			}else{
-				folder.open(Folder.READ_ONLY);    
-			}
+			folder.open(Folder.READ_WRITE);
 			logger.warn("已打开【"+folderName+"】邮箱");
-			Message[] messages = folder.getMessages();  
+			Message[] messages = folder.getMessages(); 
 			logger.warn("共有"+messages.length+"封邮件");
 			logger.warn("开始读取所有未读邮件...");
 			int i = 1;
@@ -186,39 +133,8 @@ public class PopMailRcvr{
 				}
 				logger.warn("第"+i+"封未读邮件：");
 				i++;
-				logger.warn("开始解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
-				MimeMessageParser parser = null;
-				parser = new MimeMessageParser((MimeMessage) message).parse();
-				logger.warn("结束解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
-				mail = new MailRecv();
-				mail.init(parser, message);
-				mail.setMailAccount(account);
-				mail.setUID(((POP3Folder)folder).getUID(message));
-				List<DataSource> attachments = parser.getAttachmentList(); // 获取附件，并写入磁盘
-				for (DataSource ds : attachments) {
-					MailRecvAttach attachment = new MailRecvAttach();
-					mail.getAttachments().add(attachment);
-					attachment.setContentType(ds.getContentType());
-					attachment.setName(ds.getName());	
-					if(downloadAttachToLocal){
-						File dir = generator.generateDir(new File(localAttachDirPath), mail);
-						dir.mkdirs();
-						if(!StringUtils.isBlank(ds.getName())){
-							System.out.println(ds.getName());
-							String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(ds.getName().trim())).getCanonicalPath();
-							attachment.setLocalFilePath(filePath);
-							logger.warn("开始下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
-							downloadAttachToLocal(ds, filePath);	
-							logger.warn("结束下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
-						}
-					}
-				}
+				mail = parseMail(message, account, folder, downloadAttachToLocal, localAttachDirPath, generator);
 				PopMailReadRecordManager.instance.setReadInAllDays(account, (POP3Folder)folder, message);
-				if(CommonProp.getBool("mail.contentshow")){
-					logger.warn("开始显示邮件内容");
-					logger.warn(mail.getPlainContent());
-					logger.warn("结束显示邮件内容");	
-				}
 				break;
 			}
 			if(mail==null){
@@ -226,31 +142,18 @@ public class PopMailRcvr{
 			}
 			logger.warn("结束读取所有未读邮件...");
 		} finally{
-			if (folder != null) {
-				folder.close(false);
-			}
-			if (store != null) {
-				store.close();
-			}
+			if (folder != null) folder.close(false);
+			if (store != null) store.close();
 		}
 		return mail;
 	}
 	
-	// 循环接收从今天开始指定天数内的邮件
+	// 优先接收未收到的邮件，如果都接收完了，就重复接收从今天开始指定天数内的邮件
 	public List<MailRecv> rcvOneMailCylclyInSpecDays(String server, String account, 
 			String passwd, String folderName, boolean readwriteFlag,
 			boolean downloadAttachToLocal, String localAttachDirPath, 
 			AttachDownloadDirGenerator generator, int days) throws Exception{
-		logger.warn("开始接收邮箱【"+account+"】中的邮件...");
-		Properties props = new Properties();
-		final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
-		props.setProperty("mail.pop3.socketFactory.class", SSL_FACTORY);
-        props.setProperty("mail.pop3.socketFactory.fallback", "false");
-		props.put("mail.pop3.auth.plain.disable","true");        
-		props.put("mail.pop3.ssl.enable", "true"); 
-		props.put("mail.pop3.host", server);
-		props.put("mail.transport.protocol", "pop3"); 
-		Session session = Session.getDefaultInstance(props, getAuthenticator(account, passwd));	
+		Session session = createSession(server, account, passwd);	
 		Store store = null;
 		Folder folder = null;
 		MailRecv mail = null;
@@ -259,64 +162,22 @@ public class PopMailRcvr{
 			logger.warn("开始远程连接邮箱【"+account+"】...");
 			store.connect(server, account, passwd);
 			logger.warn("已远程连接上邮箱【"+account+"】...");
-			if(folderName==null){
-				folderName = "INBOX";
-			}
+			if(folderName==null) folderName = "INBOX";
 			folder = store.getFolder(folderName);
-			if(readwriteFlag){
-				folder.open(Folder.READ_WRITE);  
-			}else{
-				folder.open(Folder.READ_ONLY);    
-			}
+			folder.open(Folder.READ_WRITE);
 			logger.warn("已打开【"+folderName+"】邮箱");
-			Message[] messages = folder.getMessages();  
-			logger.warn("共有"+messages.length+"封邮件");
+			Message[] messages = folder.getMessages(); 
 			logger.warn("开始读取所有未读邮件...");
-			int i = 1;
 			for (Message message : messages) {  
 				if(DateUtils.daysBetween(message.getSentDate(), new Date())>=days) {
-					logger.info("已超过下载期限，不再下载："+message.getSentDate());
 					continue;
 				}
 				if(PopMailReadRecordManager.instance.isReadInAllDays(account, (POP3Folder)folder, message)) {
 					logger.info("之前已阅读，本次不再下载："+((POP3Folder)folder).getUID(message));
 					continue;
 				}
-				logger.warn("第"+i+"封未读邮件：");
-				i++;
-				logger.warn("开始解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
-				MimeMessageParser parser = null;
-				parser = new MimeMessageParser((MimeMessage) message).parse();
-				logger.warn("结束解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
-				mail = new MailRecv();
-				mail.init(parser, message);
-				mail.setMailAccount(account);
-				mail.setUID(((POP3Folder)folder).getUID(message));
-				List<DataSource> attachments = parser.getAttachmentList(); // 获取附件，并写入磁盘
-				for (DataSource ds : attachments) {
-					MailRecvAttach attachment = new MailRecvAttach();
-					mail.getAttachments().add(attachment);
-					attachment.setContentType(ds.getContentType());
-					attachment.setName(ds.getName());	
-					if(downloadAttachToLocal){
-						File dir = generator.generateDir(new File(localAttachDirPath), mail);
-						dir.mkdirs();
-						if(!StringUtils.isBlank(ds.getName())){
-							System.out.println(ds.getName());
-							String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(ds.getName().trim())).getCanonicalPath();
-							attachment.setLocalFilePath(filePath);
-							logger.warn("开始下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
-							downloadAttachToLocal(ds, filePath);	
-							logger.warn("结束下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
-						}
-					}
-				}
+				mail = parseMail(message, account, folder, downloadAttachToLocal, localAttachDirPath, generator);
 				PopMailReadRecordManager.instance.setReadInAllDays(account, (POP3Folder)folder, message);
-				if(CommonProp.getBool("mail.contentshow")){
-					logger.warn("开始显示邮件内容");
-					logger.warn(mail.getPlainContent());
-					logger.warn("结束显示邮件内容");	
-				}
 				break;
 			}
 			if(mail==null){
@@ -324,18 +185,53 @@ public class PopMailRcvr{
 			}
 			logger.warn("结束读取所有未读邮件...");
 		} finally{
-			if (folder != null) {
-				folder.close(false);
-			}
-			if (store != null) {
-				store.close();
-			}
+			if (folder != null) folder.close(false);
+			if (store != null) store.close();
 		}
 		List<MailRecv> list = new ArrayList<MailRecv>();
 		if(mail!=null) {
 			list.add(mail);
 		}
 		return list;
+	}
+	
+	// 解析邮件，并下载其中附件
+	private MailRecv parseMail(Message message, String account, Folder folder, 
+			boolean downloadAttachToLocal, String localAttachDirPath, 
+			AttachDownloadDirGenerator generator) throws Exception {
+		logger.warn("开始解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
+		MimeMessageParser parser = null;
+		parser = new MimeMessageParser((MimeMessage) message).parse();
+		logger.warn("结束解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
+		MailRecv mail = new MailRecv();
+		mail.init(parser, message);
+		mail.setMailAccount(account);
+		mail.setUID(((POP3Folder)folder).getUID(message));
+		List<DataSource> attachments = parser.getAttachmentList(); // 获取附件，并写入磁盘
+		for (DataSource ds : attachments) {
+			MailRecvAttach attachment = new MailRecvAttach();
+			mail.getAttachments().add(attachment);
+			attachment.setContentType(ds.getContentType());
+			attachment.setName(ds.getName());	
+			if(downloadAttachToLocal){
+				File dir = generator.generateDir(new File(localAttachDirPath), mail);
+				dir.mkdirs();
+				if(!StringUtils.isBlank(ds.getName())){
+					System.out.println(ds.getName());
+					String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(ds.getName().trim())).getCanonicalPath();
+					attachment.setLocalFilePath(filePath);
+					logger.warn("开始下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
+					downloadAttachToLocal(ds, filePath);	
+					logger.warn("结束下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
+				}
+			}
+		}
+		if(CommonProp.getBool("mail.contentshow")){
+			logger.warn("开始显示邮件内容");
+			logger.warn(mail.getPlainContent());
+			logger.warn("结束显示邮件内容");	
+		}
+		return mail;
 	}
 
 	/*
@@ -383,11 +279,10 @@ public class PopMailRcvr{
 		String account = CommonProp.get("mail.account");
 		String passwd = CommonProp.get("mail.passwd");
 		String folderName= CommonProp.get("mail.foldername");
-		boolean readwriteFlag = CommonProp.getBool("mail.readwrite");
 		boolean downloadAttachToLocal= true;
 		String localAttachDirPath = CommonProp.get("mail.savefolder");
 		AttachDownloadDirGenerator generator = new GeneralAttachDownloadDirGenerator();
-		new PopMailRcvr().rcvMail(server,account,passwd,folderName,readwriteFlag,downloadAttachToLocal,localAttachDirPath,generator);
+		new PopMailRcvr().rcvMail(server,account,passwd,folderName,downloadAttachToLocal,localAttachDirPath,generator);
 		/*String str = "2017-12-14]--[ypt]--[wcycmx@sohu.com]--[全国各地数据-做市场必看数据；q q nu：174－918－2004 ； ＭＯＢ：１８２１－３８９４－６８０   ";
 		File file = new File(localAttachDirPath, str);
 		System.out.println(file.getCanonicalPath());*/
