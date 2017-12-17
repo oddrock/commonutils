@@ -280,6 +280,20 @@ public class FileUtils {
 			file.mkdir();
 		}
 	}
+	
+	public static void copyFileToDir(File srcFile, File dir) throws IOException {
+		if(dir==null) return;
+		if(!dir.exists()) dir.mkdirs();
+		copyFile(srcFile.getCanonicalPath(), new File(dir,srcFile.getName()).getCanonicalPath());
+	}
+	
+	// 将某个文件夹下文件拷贝到另一个文件夹下
+	public static void copyFileInSrcDirToDstDir(File srcDir, File dstDir) throws IOException {
+		if(srcDir==null || dstDir==null || !srcDir.exists() || !srcDir.isDirectory()) return;
+		for(File file : srcDir.listFiles()) {
+			if(file.isFile()) copyFileToDir(file, dstDir);
+		}
+	}
 
 	/**
 	 * 复制单个文件

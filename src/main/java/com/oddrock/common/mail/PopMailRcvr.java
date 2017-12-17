@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.activation.DataSource;
 import javax.mail.Authenticator;
 import javax.mail.Folder;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
@@ -149,9 +151,8 @@ public class PopMailRcvr{
 	}
 	
 	// 优先接收未收到的邮件，如果都接收完了，就重复接收从今天开始指定天数内的邮件
-	public List<MailRecv> rcvOneMailCylclyInSpecDays(String server, String account, 
-			String passwd, String folderName, boolean readwriteFlag,
-			boolean downloadAttachToLocal, String localAttachDirPath, 
+	public MailRecv rcvOneMailCylclyInSpecDays(String server, String account, String passwd, 
+			String folderName, boolean downloadAttachToLocal, String localAttachDirPath, 
 			AttachDownloadDirGenerator generator, int days) throws Exception{
 		Session session = createSession(server, account, passwd);	
 		Store store = null;
@@ -167,32 +168,63 @@ public class PopMailRcvr{
 			folder.open(Folder.READ_WRITE);
 			logger.warn("已打开【"+folderName+"】邮箱");
 			Message[] messages = folder.getMessages(); 
-			logger.warn("开始读取所有未读邮件...");
-			for (Message message : messages) {  
-				if(DateUtils.daysBetween(message.getSentDate(), new Date())>=days) {
-					continue;
-				}
-				if(PopMailReadRecordManager.instance.isReadInAllDays(account, (POP3Folder)folder, message)) {
-					logger.info("之前已阅读，本次不再下载："+((POP3Folder)folder).getUID(message));
-					continue;
-				}
-				mail = parseMail(message, account, folder, downloadAttachToLocal, localAttachDirPath, generator);
-				PopMailReadRecordManager.instance.setReadInAllDays(account, (POP3Folder)folder, message);
-				break;
-			}
+			mail = getUnreadMailInAllDays(account, downloadAttachToLocal, 
+					localAttachDirPath, generator, folder, mail, messages);
 			if(mail==null){
-				logger.warn("没有新邮件！");
+				logger.warn("没有未读邮件！");
+				logger.warn("开始循环读取"+days+"天内邮件...");
+				mail = getUnreadMailInRecentDays(account, downloadAttachToLocal, 
+						localAttachDirPath, generator, folder, mail, messages, days);
+				logger.warn("结束循环读取"+days+"天内邮件...");
+				if(mail==null){
+					if(PopMailReadRecordManager.instance.countInRecentDays(account, days)>0) {
+						PopMailReadRecordManager.instance.clearReadInRecentDays(account, days);
+						mail = getUnreadMailInRecentDays(account, downloadAttachToLocal, 
+								localAttachDirPath, generator, folder, mail, messages, days);
+					}
+				}
 			}
-			logger.warn("结束读取所有未读邮件...");
 		} finally{
 			if (folder != null) folder.close(false);
 			if (store != null) store.close();
 		}
-		List<MailRecv> list = new ArrayList<MailRecv>();
-		if(mail!=null) {
-			list.add(mail);
+		return mail;
+	}
+
+	// 获得近几天内一封未阅读邮件
+	private MailRecv getUnreadMailInRecentDays(String account, boolean downloadAttachToLocal, String localAttachDirPath,
+			AttachDownloadDirGenerator generator, Folder folder, MailRecv mail, Message[] messages, int days)
+			throws ParseException, MessagingException, Exception, IOException {
+		for (Message message : messages) {  
+			// 超过指定天数的邮件不考虑
+			if(DateUtils.daysBetween(message.getSentDate(), new Date())>=days) {
+				continue;
+			}
+			if(PopMailReadRecordManager.instance.isReadInRecentDays(account, (POP3Folder)folder, message, days)) {
+				continue;
+			}
+			mail = parseMail(message, account, folder, downloadAttachToLocal, localAttachDirPath, generator);
+			PopMailReadRecordManager.instance.setReadInRecentDays(account, (POP3Folder)folder, message, days);
+			break;
 		}
-		return list;
+		return mail;
+	}
+
+	// 获得一封未阅读邮件
+	private MailRecv getUnreadMailInAllDays(String account, boolean downloadAttachToLocal, String localAttachDirPath,
+			AttachDownloadDirGenerator generator, Folder folder, MailRecv mail, Message[] messages)
+			throws MessagingException, Exception, IOException {
+		logger.warn("开始读取所有未读邮件...");
+		for (Message message : messages) {  
+			if(PopMailReadRecordManager.instance.isReadInAllDays(account, (POP3Folder)folder, message)) {
+				continue;
+			}
+			mail = parseMail(message, account, folder, downloadAttachToLocal, localAttachDirPath, generator);
+			PopMailReadRecordManager.instance.setReadInAllDays(account, (POP3Folder)folder, message);
+			break;
+		}
+		logger.warn("结束读取所有未读邮件...");
+		return mail;
 	}
 	
 	// 解析邮件，并下载其中附件
@@ -217,7 +249,6 @@ public class PopMailRcvr{
 				File dir = generator.generateDir(new File(localAttachDirPath), mail);
 				dir.mkdirs();
 				if(!StringUtils.isBlank(ds.getName())){
-					System.out.println(ds.getName());
 					String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(ds.getName().trim())).getCanonicalPath();
 					attachment.setLocalFilePath(filePath);
 					logger.warn("开始下载附件【"+ ds.getName() + "】到【"+filePath+"】...");

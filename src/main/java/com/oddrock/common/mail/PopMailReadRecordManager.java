@@ -23,7 +23,7 @@ import com.sun.mail.pop3.POP3Folder;
 // 记录有哪些邮件被接收了
 public class PopMailReadRecordManager {
 	public static PopMailReadRecordManager instance = new PopMailReadRecordManager();
-	private static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd");
+	private SimpleDateFormat dateFormat;
 	private PopMailReadRecordManager(){
 		try {
 			init();
@@ -36,7 +36,7 @@ public class PopMailReadRecordManager {
 		String key;
 		if(dateStr.equals("all")) {
     		key = mail+"-all-";
-    	}else if(dateStr.equals(DATEFORMAT.format(new Date()))) {		
+    	}else if(dateStr.equals(dateFormat.format(new Date()))) {		
     		key = mail+"-"+dateStr+"-"+days;
     	}else {
     		key = null;
@@ -49,9 +49,13 @@ public class PopMailReadRecordManager {
 	}
 	
 	private void init() throws IOException{
+		dateFormat = new SimpleDateFormat("yyyyMMdd");
 		readMailUIDsMap = new HashMap<String, Set<String>>();
 		File dir = new File(CommonProp.get("mail.readrecordfile.dirpath"));
-		if(!dir.exists()) return;
+		if(!dir.exists()) {
+			dir.mkdirs();
+			return;
+		}
 		for(File file : dir.listFiles()){
 			Pattern pattern1 = Pattern.compile("(.+@.+)-(all|\\d{8})-(\\d*)"+CommonProp.get("mail.readrecordfile.suffix"));
 	        Matcher matcher = pattern1.matcher(file.getName());
@@ -82,12 +86,12 @@ public class PopMailReadRecordManager {
 	}
 	
 	public void clearReadInRecentDays(String account, int recentDays) {
-		String key = combineKey(account, DATEFORMAT.format(new Date()), String.valueOf(recentDays));
+		String key = combineKey(account, dateFormat.format(new Date()), String.valueOf(recentDays));
 		clearRead(key);
 	}
 	
 	// 清理掉所有已读记录
-	public void clearRead(String key) {
+	private void clearRead(String key) {
 		Set<String> set = readMailUIDsMap.get(key);
 		if(set==null){
 			return;
@@ -109,12 +113,12 @@ public class PopMailReadRecordManager {
 	}
 	
 	public void setUnReadInRecentDays(String account, String UID, int recentDays) throws MessagingException, IOException {
-		String key = combineKey(account, DATEFORMAT.format(new Date()), String.valueOf(recentDays));
+		String key = combineKey(account, dateFormat.format(new Date()), String.valueOf(recentDays));
 		setUnRead(key, UID);
 	}
 	
 	public void setUnReadInRecentDays(String account, POP3Folder folder, Message message, int recentDays) throws MessagingException, IOException {
-		String key = combineKey(account, DATEFORMAT.format(new Date()), String.valueOf(recentDays));
+		String key = combineKey(account, dateFormat.format(new Date()), String.valueOf(recentDays));
 		String UID = folder.getUID(message);
 		setUnRead(key, UID);
 	}
@@ -142,7 +146,7 @@ public class PopMailReadRecordManager {
 	
 	public void setReadInRecentDays(String account, POP3Folder folder, Message message, int recentDays) throws MessagingException, IOException{
 		String UID = folder.getUID(message);
-		String key = combineKey(account, DATEFORMAT.format(new Date()), String.valueOf(recentDays));
+		String key = combineKey(account, dateFormat.format(new Date()), String.valueOf(recentDays));
 		setRead(key, UID);
 	}
 	
@@ -171,7 +175,7 @@ public class PopMailReadRecordManager {
 	
 	public boolean isReadInRecentDays(String account, POP3Folder folder, Message message, int recentDays) throws MessagingException{
 		String UID = folder.getUID(message);	
-		String key = combineKey(account, DATEFORMAT.format(new Date()), String.valueOf(recentDays));
+		String key = combineKey(account, dateFormat.format(new Date()), String.valueOf(recentDays));
 		return isRead(key, UID);
 	}
 	
@@ -196,7 +200,7 @@ public class PopMailReadRecordManager {
 	
 	// 获得指定近几天的邮件数量
 	public int countInRecentDays(String account, int recentDays) {
-		String key = combineKey(account, DATEFORMAT.format(new Date()), String.valueOf(recentDays));
+		String key = combineKey(account, dateFormat.format(new Date()), String.valueOf(recentDays));
 		return countByKey(key);
 	}
 	
