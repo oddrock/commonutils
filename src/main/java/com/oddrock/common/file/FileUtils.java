@@ -527,6 +527,16 @@ public class FileUtils {
 		srcDir.delete();
 		return dstDir;
 	}
+	
+	// 创建文件的父目录
+	public static void mkDirOfParent(File file){
+		if(!file.exists()){
+			new File(file.getParent()).mkdirs();
+		}
+		if(!file.getParentFile().exists()){
+			file.getParentFile().mkdirs();
+		}
+	}
 	 
 
 	public static void main(String[] args) throws IOException {
