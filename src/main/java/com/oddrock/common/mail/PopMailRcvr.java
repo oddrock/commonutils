@@ -61,32 +61,21 @@ public class PopMailRcvr{
 		List<MailRecv> mails = new ArrayList<MailRecv>();	
 		try {
 			store = session.getStore("pop3");
-			logger.warn("开始远程连接邮箱【"+account+"】...");
 			store.connect(server, account, passwd);
-			logger.warn("已远程连接上邮箱【"+account+"】...");
 			if(folderName==null) folderName = "INBOX";
 			folder = store.getFolder(folderName);
 			folder.open(Folder.READ_WRITE);
 			logger.warn("已打开【"+folderName+"】邮箱");
 			Message[] messages = folder.getMessages(); 
-			logger.warn("共有"+messages.length+"封邮件");
-			logger.warn("开始读取所有未读邮件...");
-			int i = 1;
 			for (Message message : messages) {  
 				if(PopMailReadRecordManager.instance.isReadInAllDays(account, (POP3Folder)folder, message)) {
-					logger.info("之前已阅读，本次不再下载："+((POP3Folder)folder).getUID(message));
 					continue;
 				}
-				logger.warn("第"+i+"封未读邮件：");
-				i++;
 				MailRecv mail = parseMail(message, account, folder, downloadAttachToLocal, localAttachDirPath, generator);
 				mails.add(mail);
 				PopMailReadRecordManager.instance.setReadInAllDays(account, (POP3Folder)folder, message);
 			}
-			if(mails.size()==0){
-				logger.warn("没有新邮件！");
-			}
-			logger.warn("结束读取所有未读邮件...");
+			logger.warn("有"+mails.size()+"封新邮件");
 		}catch(Exception exception){
 			// 如果出现异常，则回滚已记录的邮件UID，便于重新下载。
 			if(mails!=null) {
@@ -97,6 +86,7 @@ public class PopMailRcvr{
 					}
 				}
 			}
+			logger.warn("出现异常，将本次所有已收到的邮件删除，并将记录设为未读");
 			throw exception;
 		}finally{
 			if (folder != null) folder.close(false);
@@ -172,9 +162,7 @@ public class PopMailRcvr{
 		MailRecv mail = null;
 		try {
 			store = session.getStore("pop3");
-			logger.warn("开始远程连接邮箱【"+account+"】...");
 			store.connect(server, account, passwd);
-			logger.warn("已远程连接上邮箱【"+account+"】...");
 			if(folderName==null) folderName = "INBOX";
 			folder = store.getFolder(folderName);
 			folder.open(Folder.READ_WRITE);
@@ -183,11 +171,9 @@ public class PopMailRcvr{
 			mail = getUnreadMailInAllDays(account, downloadAttachToLocal, 
 					localAttachDirPath, generator, folder, mail, messages);
 			if(mail==null){
-				logger.warn("没有未读邮件！");
-				logger.warn("开始循环读取"+days+"天内邮件...");
+				logger.warn("没有未读邮件！开始循环读取"+days+"天内邮件...");
 				mail = getUnreadMailInRecentDays(account, downloadAttachToLocal, 
 						localAttachDirPath, generator, folder, mail, messages, days);
-				logger.warn("结束循环读取"+days+"天内邮件...");
 				if(mail==null){
 					if(PopMailReadRecordManager.instance.countInRecentDays(account, days)>0) {
 						PopMailReadRecordManager.instance.clearReadInRecentDays(account, days);
