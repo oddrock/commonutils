@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 
 import com.oddrock.common.CommonProp;
 import com.oddrock.common.DateUtils;
+import com.oddrock.common.file.FileUtils;
 import com.oddrock.common.windows.SensitiveStringUtils;
 import com.sun.mail.pop3.POP3Folder;
 
@@ -80,13 +81,24 @@ public class PopMailRcvr{
 				i++;
 				MailRecv mail = parseMail(message, account, folder, downloadAttachToLocal, localAttachDirPath, generator);
 				mails.add(mail);
-				PopMailReadRecordManager.instance.isReadInAllDays(account, (POP3Folder)folder, message);
+				PopMailReadRecordManager.instance.setReadInAllDays(account, (POP3Folder)folder, message);
 			}
 			if(mails.size()==0){
 				logger.warn("没有新邮件！");
 			}
 			logger.warn("结束读取所有未读邮件...");
-		} finally{
+		}catch(Exception exception){
+			// 如果出现异常，则回滚已记录的邮件UID，便于重新下载。
+			if(mails!=null) {
+				for(MailRecv mail: mails) {
+					PopMailReadRecordManager.instance.setUnReadInAllDays(account, mail.getUID());
+					if(mail.getAttachments()!=null) {
+						FileUtils.deleteDirAndAllFiles(new File(mail.getAttachments().get(0).getLocalFilePath()).getParentFile());
+					}
+				}
+			}
+			throw exception;
+		}finally{
 			if (folder != null) folder.close(false);
 			if (store != null) store.close();
 		}
