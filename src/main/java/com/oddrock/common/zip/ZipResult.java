@@ -1,8 +1,8 @@
-package com.oddrock.common.file;
+package com.oddrock.common.zip;
 
 import java.io.File;
 
-public class FileZipResult {
+public class ZipResult {
 	private boolean success;
 	private File zipFile;
 	public boolean isSuccess() {

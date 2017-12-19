@@ -1,4 +1,4 @@
-package com.oddrock.common.file;
+package com.oddrock.common.zip;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -17,10 +17,10 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-public final class FileZipUtils {
-	private static Logger logger = Logger.getLogger(FileZipUtils.class);
+public final class ZipUtils {
+	private static Logger logger = Logger.getLogger(ZipUtils.class);
 			
-	private FileZipUtils() {}
+	private ZipUtils() {}
 
 	/**
 	 * 将存放在srcDir目录下的源文件，打包成zipFileName名称的zip文件，并存放到zipDirPath路径下
@@ -32,8 +32,8 @@ public final class FileZipUtils {
 	 * @return
 	 * @throws IOException 
 	 */
-	public static FileZipResult zip(File srcDir, String zipDirPath, String zipFileName, boolean cover) throws IOException {
-		FileZipResult result = new FileZipResult();
+	public static ZipResult zip(File srcDir, String zipDirPath, String zipFileName, boolean cover) throws IOException {
+		ZipResult result = new ZipResult();
 		if(srcDir==null || !srcDir.exists()){
 			System.out.println("待压缩的文件目录：" + srcDir.getCanonicalPath() + "不存在.");
 			result.setSuccess(false);
@@ -48,8 +48,8 @@ public final class FileZipUtils {
 	}
 	
 	@SuppressWarnings("resource")
-	public static FileZipResult zip(File[] srcFiles, String zipDirPath, String zipFileName, boolean cover) {
-		FileZipResult result = new FileZipResult();
+	public static ZipResult zip(File[] srcFiles, String zipDirPath, String zipFileName, boolean cover) {
+		ZipResult result = new ZipResult();
 		boolean flag = false;
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;
@@ -117,8 +117,8 @@ public final class FileZipUtils {
 	 * @return
 	 * @throws IOException
 	 */
-	public static Set<FileZipResult> zip(File[] srcFiles, String zipDirPath, String zipFileName, boolean cover, long zipFileMaxSize) throws IOException {
-		Set<FileZipResult> result = new HashSet<FileZipResult>();
+	public static Set<ZipResult> zip(File[] srcFiles, String zipDirPath, String zipFileName, boolean cover, long zipFileMaxSize) throws IOException {
+		Set<ZipResult> result = new HashSet<ZipResult>();
 		// 如果zipFileMaxSize参数小于等于0，说明不需要控制压缩包的大小
 		if(zipFileMaxSize<=0){
 			result.add(zip(srcFiles, zipDirPath, zipFileName, cover));
@@ -174,8 +174,8 @@ public final class FileZipUtils {
 		return result;
 	}
 	
-	public static Set<FileZipResult> zip(File srcDir, String zipDirPath, String zipFileName, boolean cover, long zipFileMaxSize) throws IOException {
-		Set<FileZipResult> result = new HashSet<FileZipResult>();
+	public static Set<ZipResult> zip(File srcDir, String zipDirPath, String zipFileName, boolean cover, long zipFileMaxSize) throws IOException {
+		Set<ZipResult> result = new HashSet<ZipResult>();
 		if(srcDir==null || !srcDir.exists()){
 			System.out.println("待压缩的文件目录：" + srcDir.getCanonicalPath() + "不存在.");
 			return result;
@@ -191,7 +191,7 @@ public final class FileZipUtils {
 		String sourceFilePath = "C:\\Users\\oddro\\Desktop\\哈哈儿";
 		String zipFilePath = "C:\\Users\\oddro\\Desktop";
 		String fileName = "我的压缩包";
-		FileZipUtils.zip(new File(sourceFilePath), zipFilePath,fileName, true, 15*1024*1024);
+		ZipUtils.zip(new File(sourceFilePath), zipFilePath,fileName, true, 15*1024*1024);
 		/*if (flag) {
 			System.out.println("文件打包成功!");
 		} else {
