@@ -354,6 +354,11 @@ public class FileUtils {
 	public static void gatherAllFiles(String srcDirPath, boolean remainFlag) {
 		gatherAllFiles(srcDirPath, srcDirPath, remainFlag);
 	}
+	
+	// 将文件夹下的所有文件（递归）集中到父文件夹
+	public static void gatherAllFiles(String srcDirPath) {
+		gatherAllFiles(srcDirPath, srcDirPath, false);
+	}
 
 	/**
 	 * 将文件移动到某个目录
