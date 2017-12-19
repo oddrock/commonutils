@@ -15,7 +15,7 @@ import com.github.junrar.rarfile.FileHeader;
  * 解压文件公用类
  *
  */
-public class UnZipUtils {
+public class UnZipUtils {	
 	// 检验文件是否能被解压
 	public static boolean canDeCompress(String sourceFile){
 		String type = sourceFile.substring(sourceFile.lastIndexOf(".") + 1);
