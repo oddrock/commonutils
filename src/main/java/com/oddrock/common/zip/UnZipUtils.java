@@ -36,9 +36,9 @@ public class UnZipUtils {
 		// 根据类型，进行相应的解压缩
 		String type = srcFilePath.substring(srcFilePath.lastIndexOf(".") + 1);
 		if (type.equalsIgnoreCase("zip")) {
-			unRar(srcFilePath, dstDirPath);
-		} else if (type.equalsIgnoreCase("rar")) {
 			unZip(srcFilePath, dstDirPath);
+		} else if (type.equalsIgnoreCase("rar")) {
+			unRar(srcFilePath, dstDirPath);
 		} else {
 			throw new Exception("只支持zip和rar格式的压缩包！");
 		}
