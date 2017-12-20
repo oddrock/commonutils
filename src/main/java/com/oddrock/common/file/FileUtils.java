@@ -510,9 +510,11 @@ public class FileUtils {
 	public static File copyDirToParentDir(File srcDir, File dstParentDir) throws IOException {
 		File dstDir = new File(dstParentDir, srcDir.getName());
 		dstDir.mkdirs();
-		for(File file : srcDir.listFiles()) {
-			File dstFile = new File(dstDir, file.getName());
-			copyFile(file.getCanonicalPath(), dstFile.getCanonicalPath());
+		if(srcDir.listFiles()!=null) {
+			for(File file : srcDir.listFiles()) {
+				File dstFile = new File(dstDir, file.getName());
+				copyFile(file.getCanonicalPath(), dstFile.getCanonicalPath());
+			}
 		}
 		return dstDir;
 	}
