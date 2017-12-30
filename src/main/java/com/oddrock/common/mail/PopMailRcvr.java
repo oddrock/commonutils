@@ -105,6 +105,10 @@ public class PopMailRcvr{
 		props.put("mail.pop3.ssl.enable", "true"); 
 		props.put("mail.pop3.host", server);
 		props.put("mail.transport.protocol", "pop3"); 
+
+		// 防止抛出DecodingException
+		System.setProperty("mail.mime.base64.ignoreerrors", "true");
+		
 		Session session = Session.getDefaultInstance(props, getAuthenticator(account, passwd));
 		return session;
 	}
