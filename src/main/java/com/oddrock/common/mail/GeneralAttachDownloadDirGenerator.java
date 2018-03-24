@@ -2,6 +2,8 @@ package com.oddrock.common.mail;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+
+import com.oddrock.common.OddrockStringUtils;
 import com.oddrock.common.windows.SensitiveStringUtils;
 
 public class GeneralAttachDownloadDirGenerator implements AttachDownloadDirGenerator {
@@ -13,6 +15,7 @@ public class GeneralAttachDownloadDirGenerator implements AttachDownloadDirGener
 		String dateStr = format.format(mail.getSentDate());
 		String lastDirName = dateStr + separator + SensitiveStringUtils.replaceSensitiveString(mail.getFromNick()) + separator + mail.getFrom() + separator + SensitiveStringUtils.replaceSensitiveString(mail.getSubject());
 		lastDirName = lastDirName.trim();
+		lastDirName = OddrockStringUtils.deleteSpecCharacters(lastDirName);
 		return new File(baseDir, lastDirName);
 	}
 

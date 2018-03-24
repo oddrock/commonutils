@@ -52,4 +52,36 @@ public class OddrockStringUtils {
         converted = matcher.replaceAll("<a href=\"$1\">$1</a>");
         return converted;
     }
+	
+	/**
+	 * 去掉特殊字符
+	 * @param string
+	 * @return
+	 */
+	public static String deleteSpecCharacters(String string) {
+		String regex = "[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\\\*:*\\[*\\]*@*\\.*%*\\(*\\)*\\s*";
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(string);
+		StringBuffer sb = new StringBuffer();
+		while (m.find()) {
+			sb.append(m.group());
+	          
+	        }
+		return sb.toString();
+	}
+	
+	/**
+	 * 功能：判断一个字符串是否包含特殊字符
+	 * 
+	 */
+	public static boolean containsSpecCharacters(String string) {
+		String regex = "[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\\\*:*\\[*\\]*@*\\.*%*\\(*\\)*\\s*";
+		if (string.replaceAll(regex, "").length() == 0) {
+			// 如果不包含特殊字符
+			return false;
+		} else {
+			return true;
+		}
+
+	}
 }
