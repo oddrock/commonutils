@@ -20,9 +20,10 @@ public class Timer {
 		return this;
 	}
 	// 重置
-	public void reset() {
+	public Timer reset() {
 		this.startTime = System.currentTimeMillis();
 		this.endTime = -1L;
+		return this;
 	}
 	// 获得当前已花费时间，单位是毫秒
 	public Long getSpentTimeMillis() {
