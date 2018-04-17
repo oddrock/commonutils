@@ -1,5 +1,7 @@
 package com.oddrock.common;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,5 +85,12 @@ public class OddrockStringUtils {
 			return true;
 		}
 
+	}
+	
+	public static void main(String[] args) throws IOException {
+		File file = new File("D:\\_caj2pdf\\cajwait");
+		for(File f:file.listFiles()) {
+			System.out.println(OddrockStringUtils.deleteSpecCharacters(f.getCanonicalPath()));
+		}
 	}
 }
