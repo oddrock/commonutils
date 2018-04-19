@@ -197,7 +197,7 @@ public class PopMailRcvr{
 	private MailRecv getUnreadMailInRecentDays(String account, boolean downloadAttachToLocal, String localAttachDirPath,
 			AttachDownloadDirGenerator generator, Folder folder, MailRecv mail, Message[] messages, int days)
 			throws ParseException, MessagingException, Exception, IOException {
-		for (Message message : messages) {  
+		for (Message message : messages) { 
 			// 超过指定天数的邮件不考虑
 			if(DateUtils.daysBetween(message.getSentDate(), new Date())>=days) {
 				continue;
