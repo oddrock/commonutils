@@ -646,6 +646,24 @@ public class FileUtils {
 		}
 	}
 	
+	public static boolean dirExists(String dirPath){
+		if(dirPath==null) return false;
+		File dir = new File(dirPath);
+		if(dir.exists() && dir.isDirectory()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public static boolean dirExists(File dir){
+		if(dir!=null && dir.exists() && dir.isDirectory()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	/**
 	 * 文件是否以指定后缀结尾
 	 * @param file

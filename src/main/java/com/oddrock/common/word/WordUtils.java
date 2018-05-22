@@ -87,9 +87,10 @@ public class WordUtils {
 	 * 根据word文档，将内容写入一个txt文件
 	 * @param wordFile
 	 * @param dir
-	 * @throws OpenXML4JException 
-	 * @throws XmlException 
-	 * @throws IOException 
+	 * @param overwrite			是否覆盖同名文件
+	 * @throws IOException
+	 * @throws XmlException
+	 * @throws OpenXML4JException
 	 */
 	public static void createTxtFileFromWord(File wordFile, File dir, boolean overwrite) throws IOException, XmlException, OpenXML4JException{
 		if(wordFile==null || !wordFile.exists() || !wordFile.isFile()){
@@ -118,7 +119,7 @@ public class WordUtils {
 	 * @throws OpenXML4JException
 	 */
 	public static void createTxtFileFromWord(File wordFile, boolean overwrite) throws IOException, XmlException, OpenXML4JException{
-		if(wordFile==null || !wordFile.exists() || !wordFile.isFile()){
+		if(!FileUtils.fileExists(wordFile)){
 			return;
 		}
 		File dir = wordFile.getParentFile();
