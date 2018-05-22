@@ -617,5 +617,71 @@ public class FileUtils {
         	}  
         }*/ 
 	}
+	
+	/**
+	 * 根据路径判断文件是否存在（这里的文件不包括目录）
+	 * @param filePath
+	 * @return
+	 */
+	public static boolean fileExists(String filePath){
+		if(filePath==null) return false;
+		File file = new File(filePath);
+		if(file.exists() && file.isFile()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * 判断文件是否存在（这里的文件不包括目录）
+	 * @param file
+	 * @return
+	 */
+	public static boolean fileExists(File file){
+		if(file!=null && file.exists() && file.isFile()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * 文件是否以指定后缀结尾
+	 * @param file
+	 * @param suffix
+	 * @param captitalSensitive		后缀是否大小写敏感
+	 * @return
+	 */
+	public static boolean isSuffix(File file, String suffix, boolean captitalSensitive){
+		if(file==null || !file.exists() || !file.isFile() || suffix==null){
+			return false;
+		}
+		suffix = suffix.trim();
+		if(captitalSensitive){
+			if(suffix.equals(FileUtils.getFileNameSuffix(file.getName()))){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			if(suffix.equalsIgnoreCase(FileUtils.getFileNameSuffix(file.getName()))){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		
+	}
+	
+	/**
+	 * 文件是否以指定后缀结尾，大小写不敏感
+	 * @param file
+	 * @param suffix
+	 * @return
+	 */
+	public static boolean isSuffix(File file, String suffix){
+		return isSuffix(file, suffix, false);
+	}
 
 }
