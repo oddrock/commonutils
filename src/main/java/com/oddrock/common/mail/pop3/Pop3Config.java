@@ -16,7 +16,7 @@ public class Pop3Config {
 	boolean savemailcontent2file;	// 是否将邮件内容保存到本地，默认保存
 	String localAttachDirPath; 
 	AttachDownloadDirGenerator attachDownloadDirGenerator;		// 如何生成本地文件夹
-	String rejectAddresses;			// 拒收邮箱地址，用英文逗号隔开
+	String rejectAddresses;			// 拒收邮箱地址，用|隔开
 	public boolean isRejectAddress(String senderMail){
 		if(!StringUtils.isBlank(rejectAddresses)){
 			String[] addresses = rejectAddresses.split(",");

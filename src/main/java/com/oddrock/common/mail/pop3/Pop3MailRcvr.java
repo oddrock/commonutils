@@ -58,6 +58,13 @@ public class Pop3MailRcvr{
 			
 			Set<String> rejectAddressMap = new HashSet<String>();
 			if(!StringUtils.isBlank(pop3Config.getRejectAddresses())){
+				String[] addresses = pop3Config.getRejectAddresses().split("|");
+				for(String address : addresses){
+					rejectAddressMap.add(address);
+				}
+			}
+			
+			if(!StringUtils.isBlank(pop3Config.getRejectAddresses())){
 				String[] addresses = pop3Config.getRejectAddresses().split(",");
 				for(String address : addresses){
 					rejectAddressMap.add(address);
@@ -70,7 +77,7 @@ public class Pop3MailRcvr{
 				}
 				MailRecv mail = parseMail(message, pop3Config.getAccount(), folder, 
 						pop3Config.isDownloadAttachToLocal(), pop3Config.getLocalAttachDirPath(), 
-						pop3Config.getAttachDownloadDirGenerator(), pop3Config.isSavemailcontent2file(), rejectAddressMap);
+						pop3Config.getAttachDownloadDirGenerator(), pop3Config.isSavemailcontent2file(),rejectAddressMap);
 				if(mail!=null){
 					mails.add(mail);
 				}
