@@ -1,9 +1,11 @@
-package com.oddrock.common.word;
+package com.oddrock.common.office.word;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.POIXMLDocument;
 import org.apache.poi.POIXMLTextExtractor;
 import org.apache.poi.hwpf.extractor.WordExtractor;
@@ -11,6 +13,7 @@ import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.xmlbeans.XmlException;
+
 import com.oddrock.common.file.FileUtils;
 
 public class WordUtils {	
@@ -104,7 +107,7 @@ public class WordUtils {
 			return;
 		}
 		String txtContent = parseTxtFromWord(wordFile);
-		if(txtContent==null){
+		if(StringUtils.isBlank(txtContent)){
 			return;
 		}
 		FileUtils.writeToFile(txtFile.getCanonicalPath(), txtContent, false);
