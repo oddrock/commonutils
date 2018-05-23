@@ -9,6 +9,10 @@ import java.io.OutputStream;
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
+import com.oddrock.common.ai.BaiduAiUtils;
 import com.oddrock.common.file.FileUtils;
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageEncoder;
@@ -16,6 +20,8 @@ import com.sun.media.jai.codec.JPEGEncodeParam;
 
 
 public class PicUtils {
+	private static Logger logger = Logger.getLogger(PicUtils.class);
+	
 	/**
 	 * 将tiff文件转为jpg文件
 	 * @param tiffFilePath
@@ -73,10 +79,41 @@ public class PicUtils {
 	public static String transferTiff2Jpg(String tiffFilePath) throws IOException {
 		return transferTiff2Jpg(tiffFilePath, true);
 	}
+	
+	public static void createTxtFileFromPic(File file, File dir, boolean overwrite) throws IOException {
+		if(!FileUtils.fileExists(file) || !FileUtils.dirExists(dir)){
+			return;
+		}
+		File txtFile = new File(dir, file.getName()+".txt");
+		if(!overwrite && txtFile.exists()) {
+			return;
+		}
+		String txtContent = BaiduAiUtils.ocr(file);
+		if(StringUtils.isBlank(txtContent)){
+			return;
+		}
+		logger.warn("开始将图片内容写入："+txtFile.getName());
+		FileUtils.writeToFile(txtFile.getCanonicalPath(), txtContent, false);
+		logger.warn("结束将图片内容写入："+txtFile.getName());
+	}
+	
 
-	public static void main(String[] args) throws IOException {
-		String input2 = "C:\\Users\\oddro\\Desktop\\PastedGraphic-7.tiff";  
-        transferTiff2Jpg(input2);
+	public static void createTxtFileFromPic(File file, boolean overwrite) throws IOException {
+		if(!FileUtils.fileExists(file)){
+			return;
+		}
+		File dir = file.getParentFile();
+		createTxtFileFromPic(file, dir, overwrite);
+	}
+	
+
+	public static void createTxtFileFromPic(File file) throws IOException{
+		createTxtFileFromPic(file, true);
+	}
+
+	public static void main(String[] args) throws IOException{
+		String input2 = "C:\\Users\\oddro\\Desktop\\PastedGraphic-7.jpg";  
+		createTxtFileFromPic(new File(input2));
 	}
 
 }
