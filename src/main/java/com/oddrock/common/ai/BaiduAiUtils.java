@@ -44,7 +44,13 @@ public class BaiduAiUtils {
         client.setSocketTimeoutInMillis(60000);
         // 调用通用识别接口
         JSONObject genRes = client.basicGeneral(file.getCanonicalPath(), new HashMap<String, String>());
-        JSONArray words_result = genRes.getJSONArray("words_result");
+        JSONArray words_result = null;
+        try{
+        	words_result = genRes.getJSONArray("words_result");
+        }catch(Exception e){
+        	return "";
+        }
+        
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < words_result.length(); i++) {
         	JSONObject obj = (JSONObject)words_result.get(i);
