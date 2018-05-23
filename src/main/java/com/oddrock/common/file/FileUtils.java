@@ -70,6 +70,10 @@ public class FileUtils {
 			return "";
 		}
 	}
+	
+	public static String getFileNameSuffix(File file) {
+		return getFileNameSuffix(file.getName());
+	}
 
 	/**
 	 * 将文件作为一个字符串整体读取

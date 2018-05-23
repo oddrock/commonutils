@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.poi.POIXMLDocument;
 import org.apache.poi.POIXMLTextExtractor;
 import org.apache.poi.hwpf.extractor.WordExtractor;
@@ -17,6 +18,8 @@ import org.apache.xmlbeans.XmlException;
 import com.oddrock.common.file.FileUtils;
 
 public class WordUtils {	
+	private static Logger logger = Logger.getLogger(WordUtils.class);
+	
 	/**
 	 * 从word文档中解析出文字
 	 * @param filePath
@@ -110,7 +113,9 @@ public class WordUtils {
 		if(StringUtils.isBlank(txtContent)){
 			return;
 		}
+		logger.warn("开始将word内容写入："+txtFile.getName());
 		FileUtils.writeToFile(txtFile.getCanonicalPath(), txtContent, false);
+		logger.warn("完成将word内容写入："+txtFile.getName());
 	}
 	
 	/**

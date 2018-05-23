@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.pdfbox.io.RandomAccessBufferedFileInputStream;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -15,6 +16,7 @@ import org.apache.xmlbeans.XmlException;
 import com.oddrock.common.file.FileUtils;
 
 public class PdfUtils {
+	private static Logger logger = Logger.getLogger(PdfUtils.class);
 	public static String parseTxtFromPdf(File file) {  
 		String result = null;  
 		if(!FileUtils.fileExists(file) || !FileUtils.isSuffix(file, "pdf")){
@@ -64,7 +66,9 @@ public class PdfUtils {
 		if(StringUtils.isBlank(txtContent)){
 			return;
 		}
+		logger.warn("开始将pdf内容写入："+txtFile.getName());
 		FileUtils.writeToFile(txtFile.getCanonicalPath(), txtContent, false);
+		logger.warn("结束将pdf内容写入："+txtFile.getName());
 	}
 	
 

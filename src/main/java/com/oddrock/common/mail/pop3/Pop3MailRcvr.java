@@ -161,7 +161,10 @@ public class Pop3MailRcvr{
 			File dir = generator.generateDir(new File(localAttachDirPath), mail);
 			dir.mkdirs();
 			String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(mail.getSubject().trim())+".txt").getCanonicalPath();
-			FileUtils.writeToFile(filePath, mail.getPlainContent(), false);
+			if(filePath!=null && mail.getPlainContent()!=null){
+				FileUtils.writeToFile(filePath, mail.getPlainContent(), false);
+			}
+			
 		}
 		if(CommonProp.getBool("mail.contentshow")){
 			logger.warn("开始显示邮件内容");

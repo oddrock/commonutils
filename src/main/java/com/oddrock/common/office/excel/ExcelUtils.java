@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -20,6 +21,8 @@ import org.apache.xmlbeans.XmlException;
 import com.oddrock.common.file.FileUtils;
 
 public class ExcelUtils {
+	private static Logger logger = Logger.getLogger(ExcelUtils.class);
+	
 	public static String parseTxtFromExcel(File file) throws IOException, XmlException, OpenXML4JException{
 		String content = null;
 		if(file==null || !file.exists() || !file.isFile()){
@@ -147,7 +150,9 @@ public class ExcelUtils {
 		if(StringUtils.isBlank(txtContent)){
 			return;
 		}
+		logger.warn("开始将excel内容写入："+txtFile.getName());
 		FileUtils.writeToFile(txtFile.getCanonicalPath(), txtContent, false);
+		logger.warn("结束将excel内容写入："+txtFile.getName());
 	}
     
     public static void createTxtFileFromExcel(File excelFile, boolean overwrite) throws IOException, XmlException, OpenXML4JException{

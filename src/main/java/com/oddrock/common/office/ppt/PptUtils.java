@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.poi.POIXMLDocument;
 import org.apache.poi.hslf.extractor.PowerPointExtractor;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
@@ -16,6 +17,7 @@ import com.oddrock.common.file.FileUtils;
 
 
 public class PptUtils {
+	private static Logger logger = Logger.getLogger(PptUtils.class);
 	public static String parseTxtFromPpt(File file) throws IOException, XmlException, OpenXML4JException{
 		String result = null;
 		if(!FileUtils.fileExists(file))	return result;
@@ -56,7 +58,9 @@ public class PptUtils {
 		if(StringUtils.isBlank(txtContent)){
 			return;
 		}
+		logger.warn("开始将ppt内容写入："+txtFile.getName());
 		FileUtils.writeToFile(txtFile.getCanonicalPath(), txtContent, false);
+		logger.warn("结束将ppt内容写入："+txtFile.getName());
 	}
 	
 
