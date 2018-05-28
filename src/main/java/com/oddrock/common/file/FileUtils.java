@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -296,6 +297,34 @@ public class FileUtils {
 		}
 		return result;
 	}
+	
+	public static List<String> getChildrenFilePathRecursively(String srcDirPath) {
+		List<String> result = new ArrayList<String>();
+		if(!FileUtils.dirExists(srcDirPath) && !FileUtils.fileExists(srcDirPath)){
+			return result;			// 如果不是目录也不是文件，直接返回。
+		}
+		if(FileUtils.fileExists(srcDirPath)){		// 如果是文件，直接返回该文件
+			try {
+				result.add(new File(srcDirPath).getCanonicalPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return result;
+		}
+		Queue<File> queue = new LinkedList<File>();
+		queue.add(new File(srcDirPath));
+		while (!queue.isEmpty()) {
+			File dir = queue.remove();
+			for (File file : dir.listFiles()) {
+				if (file.isDirectory()) {
+					queue.add(file);
+				} else if(file.isFile()) {
+					result.add(file.getAbsolutePath());
+				}
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * 递归创建目录 参考：http://blog.csdn.net/hephec/article/details/37960617
@@ -370,14 +399,19 @@ public class FileUtils {
 	 */
 	public static void gatherAllFiles(String srcDirPath, String dstDirPath, boolean remainFlag) {
 		mkDirRecursively(dstDirPath); // 创建目标目录
-		File dstDir = new File(dstDirPath);
-		dstDir.mkdirs();
-		for (String filePath : getAbsolutePathRecursively(srcDirPath)) {
-			String newFilePath = renameFileByAdd(filePath, dstDirPath, null);
-			if (remainFlag) {
-				copyFile(filePath, newFilePath);
-			} else {
-				new File(filePath).renameTo(new File(newFilePath));
+		for (String filePath : getChildrenFilePathRecursively(srcDirPath)) {
+			String newFilePath = null;
+			try {
+				newFilePath = new File(new File(dstDirPath), new File(filePath).getName()).getCanonicalPath();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if(newFilePath!=null){
+				if (remainFlag) {
+					copyFile(filePath, newFilePath);
+				} else {
+					new File(filePath).renameTo(new File(newFilePath));
+				}
 			}
 		}
 	}
