@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -69,6 +70,10 @@ public class FileUtils {
 		} else {
 			return "";
 		}
+	}
+	
+	public static String getFileNameSuffix(File file) {
+		return getFileNameSuffix(file.getName());
 	}
 
 	/**
@@ -326,6 +331,34 @@ public class FileUtils {
 		}
 		return result;
 	}
+	
+	public static List<String> getChildrenFilePathRecursively(String srcDirPath) {
+		List<String> result = new ArrayList<String>();
+		if(!FileUtils.dirExists(srcDirPath) && !FileUtils.fileExists(srcDirPath)){
+			return result;			// 如果不是目录也不是文件，直接返回。
+		}
+		if(FileUtils.fileExists(srcDirPath)){		// 如果是文件，直接返回该文件
+			try {
+				result.add(new File(srcDirPath).getCanonicalPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return result;
+		}
+		Queue<File> queue = new LinkedList<File>();
+		queue.add(new File(srcDirPath));
+		while (!queue.isEmpty()) {
+			File dir = queue.remove();
+			for (File file : dir.listFiles()) {
+				if (file.isDirectory()) {
+					queue.add(file);
+				} else if(file.isFile()) {
+					result.add(file.getAbsolutePath());
+				}
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * 递归创建目录 参考：http://blog.csdn.net/hephec/article/details/37960617
@@ -400,14 +433,19 @@ public class FileUtils {
 	 */
 	public static void gatherAllFiles(String srcDirPath, String dstDirPath, boolean remainFlag) {
 		mkDirRecursively(dstDirPath); // 创建目标目录
-		File dstDir = new File(dstDirPath);
-		dstDir.mkdirs();
-		for (String filePath : getAbsolutePathRecursively(srcDirPath)) {
-			String newFilePath = renameFileByAdd(filePath, dstDirPath, null);
-			if (remainFlag) {
-				copyFile(filePath, newFilePath);
-			} else {
-				new File(filePath).renameTo(new File(newFilePath));
+		for (String filePath : getChildrenFilePathRecursively(srcDirPath)) {
+			String newFilePath = null;
+			try {
+				newFilePath = new File(new File(dstDirPath), new File(filePath).getName()).getCanonicalPath();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if(newFilePath!=null){
+				if (remainFlag) {
+					copyFile(filePath, newFilePath);
+				} else {
+					new File(filePath).renameTo(new File(newFilePath));
+				}
 			}
 		}
 	}
@@ -650,6 +688,90 @@ public class FileUtils {
         		System.out.println(f);
         	}  
         }*/ 
+	}
+	
+	/**
+	 * 根据路径判断文件是否存在（这里的文件不包括目录）
+	 * @param filePath
+	 * @return
+	 */
+	public static boolean fileExists(String filePath){
+		if(filePath==null) return false;
+		File file = new File(filePath);
+		if(file.exists() && file.isFile()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * 判断文件是否存在（这里的文件不包括目录）
+	 * @param file
+	 * @return
+	 */
+	public static boolean fileExists(File file){
+		if(file!=null && file.exists() && file.isFile()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public static boolean dirExists(String dirPath){
+		if(dirPath==null) return false;
+		File dir = new File(dirPath);
+		if(dir.exists() && dir.isDirectory()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public static boolean dirExists(File dir){
+		if(dir!=null && dir.exists() && dir.isDirectory()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * 文件是否以指定后缀结尾
+	 * @param file
+	 * @param suffix
+	 * @param captitalSensitive		后缀是否大小写敏感
+	 * @return
+	 */
+	public static boolean isSuffix(File file, String suffix, boolean captitalSensitive){
+		if(file==null || !file.exists() || !file.isFile() || suffix==null){
+			return false;
+		}
+		suffix = suffix.trim();
+		if(captitalSensitive){
+			if(suffix.equals(FileUtils.getFileNameSuffix(file.getName()))){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			if(suffix.equalsIgnoreCase(FileUtils.getFileNameSuffix(file.getName()))){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		
+	}
+	
+	/**
+	 * 文件是否以指定后缀结尾，大小写不敏感
+	 * @param file
+	 * @param suffix
+	 * @return
+	 */
+	public static boolean isSuffix(File file, String suffix){
+		return isSuffix(file, suffix, false);
 	}
 
 }
