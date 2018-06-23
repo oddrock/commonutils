@@ -127,6 +127,38 @@ public class FileUtils {
 		return lines;
 	}
 	
+	public static Set<String> readFileContentPerLineEncoding(String fileName, String encoding) {
+		Set<String> lines = new HashSet<String>();
+		BufferedReader reader = null;
+		FileInputStream fr = null;
+		InputStreamReader is = null;
+		try {
+			fr = new FileInputStream(fileName); 
+			is = new InputStreamReader(fr,encoding); 
+			reader = new BufferedReader(is);
+			String tempString = null;
+			// 一次读入一行，直到读入null为文件结束
+			while ((tempString = reader.readLine()) != null) {
+				lines.add(tempString);
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e1) {
+				}
+			}
+		}
+		return lines;
+	}
+	
+	public static Set<String> readFileContentPerLineEncoding(String fileName) {
+		return readFileContentPerLineEncoding(fileName, "UTF-8");
+	}
+	
 	public static String readFileContentToStrExt(String fileName) throws IOException {
 		File file = new File(fileName);
 		String encoding = getEncoding(file);
@@ -211,8 +243,8 @@ public class FileUtils {
 		}
 	}
 
-	public static void writeToFile(String filePath, String conent, boolean append) {
-		BufferedWriter out = null;
+	public static void writeToFile(String filePath, String content, boolean append) {
+		/*BufferedWriter out = null;
 		try {
 			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, append)));
 			out.write(conent);
@@ -226,8 +258,10 @@ public class FileUtils {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
+		writeToFile(filePath, content, append, "UTF-8");	// 默认采用UTF-8编码
 	}
+	
 
 	public static void writeToFile(String filePath, String conent, boolean append, String encoding) {
 		BufferedWriter out = null;
