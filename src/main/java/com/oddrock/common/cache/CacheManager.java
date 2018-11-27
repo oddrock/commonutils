@@ -72,4 +72,21 @@ public class CacheManager {
 			cache.put(cacheKey, value);
 		}
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public synchronized void clear() {
+		for(Cache cache : cacheMap.values()) {
+			if(cache!=null) {
+				cache.clear();
+			}
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public synchronized void clear(String cacheName) {
+		Cache cache = cacheMap.get(cacheName);
+		if(cache!=null) {
+			cache.clear();
+		}
+	}
 }
