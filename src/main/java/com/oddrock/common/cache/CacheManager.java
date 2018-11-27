@@ -73,6 +73,9 @@ public class CacheManager {
 		}
 	}
 	
+	/**
+	 * 清空所有缓存值
+	 */
 	@SuppressWarnings("rawtypes")
 	public synchronized void clear() {
 		for(Cache cache : cacheMap.values()) {
@@ -82,6 +85,10 @@ public class CacheManager {
 		}
 	}
 	
+	/**
+	 * 清空缓存
+	 * @param cacheName
+	 */
 	@SuppressWarnings("rawtypes")
 	public synchronized void clear(String cacheName) {
 		Cache cache = cacheMap.get(cacheName);
