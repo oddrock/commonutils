@@ -34,7 +34,7 @@ public class CacheManager {
 	public synchronized void createCache(String cacheName, CacheConfiguration config, boolean forceFlag) {	
 		// 如果cache不存在或者需要强制增加，则强制增加
 		if(cacheMap.get(cacheName)==null || (cacheMap.get(cacheName)!=null && forceFlag)) {
-			Cache cache = cacheManager.createCache("test",config);
+			Cache cache = cacheManager.createCache(cacheName,config);
 			cacheMap.put(cacheName, cache);
 		}
 	}
