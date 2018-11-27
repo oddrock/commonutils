@@ -43,11 +43,6 @@ public class CacheManager {
 		createCache(cacheName, config, false);
 	}
 	
-	@SuppressWarnings("rawtypes")
-	public Cache getCache(String cacheName){
-		return cacheMap.get(cacheName);
-	}
-	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object get(String cacheName, String cacheKey) {
 		Cache cache = cacheMap.get(cacheName);
