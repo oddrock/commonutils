@@ -11,10 +11,10 @@ public class CacheUtils {
 		boolean first = true;
 		for(Object o : params) {
 			if(first) {
-				sb.append(o.toString());
+				sb.append(o);
 				first = false;
 			}else {
-				sb.append("|").append(o.toString());
+				sb.append("|").append(o);
 			}
 		}
 		return sb.toString();
