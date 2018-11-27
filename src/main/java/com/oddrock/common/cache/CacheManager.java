@@ -28,7 +28,7 @@ public class CacheManager {
 	 * 根据cache名和配置创建cache
 	 * @param cacheName
 	 * @param config
-	 * @param forceFlag
+	 * @param forceFlag		如果已有缓存，是否强制创建
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public synchronized void createCache(String cacheName, CacheConfiguration config, boolean forceFlag) {	
@@ -43,6 +43,12 @@ public class CacheManager {
 		createCache(cacheName, config, false);
 	}
 	
+	/**
+	 * 根据缓存名和缓存键查询缓存值
+	 * @param cacheName
+	 * @param cacheKey
+	 * @return
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object get(String cacheName, String cacheKey) {
 		Cache cache = cacheMap.get(cacheName);
@@ -53,6 +59,12 @@ public class CacheManager {
 		}
 	}
 	
+	/**
+	 * 存储缓存值
+	 * @param cacheName
+	 * @param cacheKey
+	 * @param value
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void put(String cacheName, String cacheKey, Object value) {
 		Cache cache = cacheMap.get(cacheName);
