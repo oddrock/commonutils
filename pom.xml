@@ -121,11 +121,20 @@
 			<version>4.3.2</version>
 		</dependency>
 
-		<!-- 汉语拼音转文字 -->
+		<!-- 汉语拼音转文字: start -->
 		<dependency>
 			<groupId>com.belerweb</groupId>
 			<artifactId>pinyin4j</artifactId>
 			<version>2.5.1</version>
 		</dependency>
+		<!-- 汉语拼音转文字: end -->
+		
+		<!-- ehcache: start -->
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>3.6.2</version>
+		</dependency>
+		<!-- ehcache: end -->
 	</dependencies>
 </project>
