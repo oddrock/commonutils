@@ -643,52 +643,6 @@ public class FileUtils {
 			file.getParentFile().mkdirs();
 		}
 	}
-	 
-
-	public static void main(String[] args) throws IOException {
-		// mkDirRecursively("C:\\Users\\oddro\\Desktop");
-		/*
-		 * for(String path :
-		 * getAllFilesAbsoultePathRecursively("C:\\Users\\oddro\\Desktop\\熊逸书院" )){
-		 * System.out.println(path); }
-		 */
-		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\伯凡日知录", false);
-		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\超级个体", false);
-		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\关系攻略", false);
-		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\宁向东清华管理课", false);
-		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\武志红心理学", false);
-		gatherAllFiles("C:\\Users\\oddro\\Desktop\\新建文件夹 (2)\\卓老板聊科技（第一季）", false);
-		/*
-		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\关系攻略",
-		 * "C:\\Users\\oddro\\Desktop\\得到\\关系攻略", true);
-		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\熊逸书院",
-		 * "C:\\Users\\oddro\\Desktop\\得到\\熊逸书院", true);
-		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\武志红心理学",
-		 * "C:\\Users\\oddro\\Desktop\\得到\\武志红心理学", true);
-		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\5分钟商学院",
-		 * "C:\\Users\\oddro\\Desktop\\得到\\5分钟商学院", true);
-		 */
-		/*for(File file : new File("C:\\Users\\qzfeng\\Desktop\\cajwait").listFiles()) {
-			System.out.println(getEncoding(file));
-		}*/
-		
-		/*File  file = new File("C:\\_Download");  
-		deleteHiddenFiles(file);
-        File[] files = file.listFiles(); 
-        System.out.println("第一遍");
-        for(File f:files)  {  
-        	if(f.isFile() && f.isHidden()){
-        		System.out.println(f);
-        		f.delete();
-        	}  
-        }  
-        System.out.println("第二遍");
-        for(File f:files)  {  
-        	if(f.isFile() && f.isHidden()){
-        		System.out.println(f);
-        	}  
-        }*/ 
-	}
 	
 	/**
 	 * 根据路径判断文件是否存在（这里的文件不包括目录）
@@ -773,5 +727,44 @@ public class FileUtils {
 	public static boolean isSuffix(File file, String suffix){
 		return isSuffix(file, suffix, false);
 	}
-
+	
+	public static void main(String[] args) throws IOException {
+		// mkDirRecursively("C:\\Users\\oddro\\Desktop");
+		/*
+		 * for(String path :
+		 * getAllFilesAbsoultePathRecursively("C:\\Users\\oddro\\Desktop\\熊逸书院" )){
+		 * System.out.println(path); }
+		 */
+		gatherAllFiles("C:\\Users\\oddro\\Desktop\\关系攻略（第一季）");
+		/*
+		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\关系攻略",
+		 * "C:\\Users\\oddro\\Desktop\\得到\\关系攻略", true);
+		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\熊逸书院",
+		 * "C:\\Users\\oddro\\Desktop\\得到\\熊逸书院", true);
+		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\武志红心理学",
+		 * "C:\\Users\\oddro\\Desktop\\得到\\武志红心理学", true);
+		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\5分钟商学院",
+		 * "C:\\Users\\oddro\\Desktop\\得到\\5分钟商学院", true);
+		 */
+		/*for(File file : new File("C:\\Users\\qzfeng\\Desktop\\cajwait").listFiles()) {
+			System.out.println(getEncoding(file));
+		}*/
+		
+		/*File  file = new File("C:\\_Download");  
+		deleteHiddenFiles(file);
+        File[] files = file.listFiles(); 
+        System.out.println("第一遍");
+        for(File f:files)  {  
+        	if(f.isFile() && f.isHidden()){
+        		System.out.println(f);
+        		f.delete();
+        	}  
+        }  
+        System.out.println("第二遍");
+        for(File f:files)  {  
+        	if(f.isFile() && f.isHidden()){
+        		System.out.println(f);
+        	}  
+        }*/ 
+	}
 }
