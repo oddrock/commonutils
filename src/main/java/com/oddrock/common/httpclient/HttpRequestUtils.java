@@ -8,7 +8,9 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 
 /**
@@ -17,6 +19,76 @@ import org.apache.http.entity.StringEntity;
  *
  */
 public class HttpRequestUtils {
+	
+	/**
+     * HTTP DELETE
+     * @param url
+     * @return
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public static HttpResponse delete(String url) throws ClientProtocolException, IOException {
+    	HttpResponse httpResponse = new HttpResponse();
+    	HttpDelete httpdelete = new HttpDelete(url);
+        RequestConfig postConfig = RequestConfig.custom().setSocketTimeout(25000).setConnectTimeout(3000).build();
+        httpdelete.setConfig(postConfig);
+        CloseableHttpResponse response = HttpClientPool.getHttpClient().execute(httpdelete);
+        HttpEntity entity = response.getEntity();
+        int statusCode = response.getStatusLine().getStatusCode();
+        httpResponse.setStatusCode(statusCode);
+        String str = null;
+        if (entity != null) {
+        	InputStream instreams = entity.getContent();
+            str = convertStreamToString(instreams);
+            httpResponse.setContent(str);
+        	httpdelete.abort();
+        }
+    	return httpResponse;
+    }
+    
+    /**
+     * JSON提交
+     * @param url
+     * @param jsonContent
+     * @return
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public static HttpResponse putJson(String url, String jsonContent) throws ClientProtocolException, IOException {
+    	return putJson(url, jsonContent, "UTF-8");
+    }
+    
+    /**
+     * JSON提交
+     * @param url
+     * @param jsonContent
+     * @param encoding
+     * @return
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public static HttpResponse putJson(String url, String jsonContent, String encoding) throws ClientProtocolException, IOException {
+    	HttpResponse httpResponse = new HttpResponse();
+    	HttpPut httpPost = new HttpPut(url);
+        httpPost.setHeader("Content-Type", "application/json");
+        StringEntity postContent = new StringEntity(jsonContent, encoding);
+        httpPost.setEntity(postContent);
+        RequestConfig postConfig = RequestConfig.custom().setSocketTimeout(25000).setConnectTimeout(3000).build();
+        httpPost.setConfig(postConfig);
+        CloseableHttpResponse response = HttpClientPool.getHttpClient().execute(httpPost);
+        HttpEntity entity = response.getEntity();
+        int statusCode = response.getStatusLine().getStatusCode();
+        httpResponse.setStatusCode(statusCode);
+        String str = null;
+        if (entity != null) {
+        	InputStream instreams = entity.getContent();
+            str = convertStreamToString(instreams);
+            httpResponse.setContent(str);
+        	httpPost.abort();
+        }
+    	return httpResponse;
+    }
+    
 	/**
 	 * 用POST方式发送JSON数据，默认用UTF-8编码
 	 * @param url
