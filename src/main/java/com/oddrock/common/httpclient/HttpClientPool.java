@@ -40,7 +40,7 @@ public class HttpClientPool {
     
     private CloseableHttpClient _getHttpClient(){
         RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.IGNORE_COOKIES).build();  
-        CloseableHttpClient client = HttpClients.custom().setConnectionManager(cm).setDefaultRequestConfig(globalConfig).build();  
+        CloseableHttpClient client = HttpClients.custom().setConnectionManager(cm).setDefaultRequestConfig(globalConfig).build(); 
         return client;
     }
 }

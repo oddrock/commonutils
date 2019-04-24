@@ -11,6 +11,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
@@ -182,6 +183,42 @@ public class HttpRequestUtils {
 	
 	public static HttpResponse post(String url, String strContent) throws ClientProtocolException, IOException {
 		return post(url, strContent, null, null);
+	}
+	
+	/**
+	 * 发送GET请求
+	 * @param url
+	 * @param responseEncoding
+	 * @return
+	 * @throws UnsupportedOperationException
+	 * @throws IOException
+	 */
+	public static HttpResponse get(String url, String responseEncoding) throws UnsupportedOperationException, IOException  {
+		HttpResponse httpResponse = new HttpResponse();
+    	HttpGet httpGet = new HttpGet(url);
+        RequestConfig postConfig = RequestConfig.custom().setSocketTimeout(25000).setConnectTimeout(3000).build();
+        httpGet.setConfig(postConfig);
+        CloseableHttpResponse response = HttpClientPool.getHttpClient().execute(httpGet);
+        HttpEntity entity = response.getEntity();
+        int statusCode = response.getStatusLine().getStatusCode();		
+        httpResponse.setStatusCode(statusCode);
+        String str = null;
+        if (entity != null) {
+        	InputStream instreams = entity.getContent();
+        	if(responseEncoding!=null) {
+        		str = convertStreamToString(instreams, responseEncoding);
+        	}else {
+        		str = convertStreamToString(instreams);
+        	}
+            
+            httpResponse.setContent(str);
+        	httpGet.abort();
+        }
+        return httpResponse;
+	}
+	
+	public static HttpResponse get(String url) throws UnsupportedOperationException, IOException  {
+		return get(url, "UTF-8");
 	}
 	
 	/*
