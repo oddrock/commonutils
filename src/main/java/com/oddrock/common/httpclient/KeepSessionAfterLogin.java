@@ -14,7 +14,61 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;  
 import org.apache.http.util.EntityUtils;  
 
-public class KeepSessionWithOneHttpclient {  
+public class KeepSessionAfterLogin {  
+	public static HttpResponse postAfterLogin(String loginUrl,List<NameValuePair> loginNameValuePair,  
+            String postUrl, List<NameValuePair> postNamePairList, String encoding) {  
+		HttpResponse httpResponse = new HttpResponse();
+		
+        String retStr = "";//每次响应信息  
+        int statusCode = 0 ;//每次响应代码  
+          
+        // 创建HttpClientBuilder  
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();  
+        // HttpClient  
+        CloseableHttpClient closeableHttpClient = null;  
+        closeableHttpClient = httpClientBuilder.build();  
+        HttpPost httpPost = new HttpPost(loginUrl);  
+        // 设置请求和传输超时时间  
+        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(30000).setConnectTimeout(30000).build();  
+        httpPost.setConfig(requestConfig);  
+        UrlEncodedFormEntity entity = null;  
+        try {  
+            if(null!=loginNameValuePair){  
+                entity = new UrlEncodedFormEntity(loginNameValuePair, encoding);  
+                httpPost.setEntity(entity);  
+            }  
+            //登录  
+            CloseableHttpResponse loginResponse = closeableHttpClient.execute(httpPost);  
+            statusCode = loginResponse.getStatusLine().getStatusCode();  
+            retStr = EntityUtils.toString(loginResponse.getEntity(), encoding);  
+              
+            //登录后其他操作  
+            httpPost = new HttpPost(postUrl);  
+            entity = new UrlEncodedFormEntity(postNamePairList, encoding);  
+            httpPost.setEntity(entity);   
+            CloseableHttpResponse operationResponse = closeableHttpClient.execute(httpPost);  
+            statusCode = operationResponse.getStatusLine().getStatusCode();  
+            retStr = EntityUtils.toString(operationResponse.getEntity(), encoding);  
+            httpResponse.setContent(retStr);
+            httpResponse.setStatusCode(statusCode);
+            
+            if(statusCode == 302){  
+                String redirectUrl = operationResponse.getLastHeader("Location").getValue();  
+                httpPost = new HttpPost(redirectUrl);  
+                CloseableHttpResponse redirectResponse = closeableHttpClient.execute(httpPost);  
+                statusCode = redirectResponse.getStatusLine().getStatusCode();  
+                retStr = EntityUtils.toString(redirectResponse.getEntity(), encoding);  
+                httpResponse.setContent(retStr);
+                httpResponse.setStatusCode(statusCode);
+            }  
+            // 释放资源  
+            closeableHttpClient.close();  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+        return httpResponse;  
+    }  
+	
     /** 
      * 如果用的是同一个HttpClient且没去手动连接放掉client.getConnectionManager().shutdown(); 
      * 都不用去设置cookie的ClientPNames.COOKIE_POLICY。httpclient都是会保留cookie的 
