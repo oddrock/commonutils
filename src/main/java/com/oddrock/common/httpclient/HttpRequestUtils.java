@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
@@ -132,11 +134,81 @@ public class HttpRequestUtils {
     	return httpResponse;
     }
     
+	/**
+	 * 用POST方式发送FORM数据
+	 * @param url
+	 * @param strContent
+	 * @param requestEncoding
+	 * @param responseEncoding
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public static HttpResponse post(
+			String url, String strContent, String requestEncoding, String responseEncoding) 
+			throws ClientProtocolException, IOException {
+		HttpResponse httpResponse = new HttpResponse();
+    	HttpPost httpPost = new HttpPost(url);
+    	if(requestEncoding==null) {
+    		requestEncoding = "UTF-8";
+    	}
+    	StringEntity postContent = new StringEntity(strContent, requestEncoding);
+        httpPost.setEntity(postContent);
+        httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+        RequestConfig postConfig = RequestConfig.custom().setSocketTimeout(25000).setConnectTimeout(3000).build();
+        httpPost.setConfig(postConfig);
+        CloseableHttpResponse response = HttpClientPool.getHttpClient().execute(httpPost);
+        HttpEntity entity = response.getEntity();
+        int statusCode = response.getStatusLine().getStatusCode();		
+        httpResponse.setStatusCode(statusCode);
+        String str = null;
+        if (entity != null) {
+        	InputStream instreams = entity.getContent();
+        	if(responseEncoding!=null) {
+        		str = convertStreamToString(instreams, responseEncoding);
+        	}else {
+        		str = convertStreamToString(instreams);
+        	}
+            
+            httpResponse.setContent(str);
+        	httpPost.abort();
+        }
+        return httpResponse;
+	}
+	
+	public static HttpResponse post(String url, String strContent, String encoding) throws ClientProtocolException, IOException {
+		return post(url, strContent, encoding, encoding);
+	}
+	
+	public static HttpResponse post(String url, String strContent) throws ClientProtocolException, IOException {
+		return post(url, strContent, null, null);
+	}
+	
 	/*
 	 * 将流转为字符串
 	 */
     private static String convertStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
+    
+    private static String convertStreamToString(InputStream is, String encoding) throws UnsupportedEncodingException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
         StringBuilder sb = new StringBuilder();
         String line = null;
         try {
