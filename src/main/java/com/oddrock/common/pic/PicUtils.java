@@ -1,11 +1,13 @@
 package com.oddrock.common.pic;
 
+import java.awt.Image;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 
@@ -17,6 +19,8 @@ import com.oddrock.common.file.FileUtils;
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageEncoder;
 import com.sun.media.jai.codec.JPEGEncodeParam;
+
+import net.coobird.thumbnailator.Thumbnails;
 
 
 public class PicUtils {
@@ -110,7 +114,39 @@ public class PicUtils {
 	public static void createTxtFileFromPic(File file) throws IOException{
 		createTxtFileFromPic(file, true);
 	}
-
+	
+	public static void shrinkImg(String srcImgFilePath, String dstImgDirPath, double shrinkRatio) throws IOException {
+		String srcFileName = FileUtils.getFileNameFromFilePath(srcImgFilePath);
+		String dstImgFilePath = new File(dstImgDirPath, srcFileName).getCanonicalPath();
+		Thumbnails.of(srcImgFilePath).scale(1f).outputQuality(shrinkRatio).toFile(dstImgFilePath);	
+	}
+	
+	public static void shrinkImgBatch(String srcImgDirPath, String dstImgDirPath, double shrinkRatio) throws IOException {
+		File srcDir = new File(srcImgDirPath);
+		int count = 0;
+		if(srcDir.exists() && srcDir.isDirectory()) {
+			for(File file : srcDir.listFiles()) {
+				if(file.exists() && file.isFile() && !file.isHidden() && isImgFile(file) ) {
+					shrinkImg(file.getCanonicalPath(), dstImgDirPath, shrinkRatio);
+					count++;
+					if(count%10==0) {
+						System.out.println("已完成"+count+"张图片的压缩...");
+					}
+				}
+			}
+		}
+	
+	}
+	
+	public static boolean isImgFile(File file) {
+		try {
+            Image image = ImageIO.read(file);
+            return image != null;
+        } catch(IOException ex) {
+            return false;
+        }
+	}
+	
 	public static void main(String[] args) throws IOException{
 		String input2 = "C:\\Users\\oddro\\Desktop\\PastedGraphic-7.jpg";  
 		createTxtFileFromPic(new File(input2));

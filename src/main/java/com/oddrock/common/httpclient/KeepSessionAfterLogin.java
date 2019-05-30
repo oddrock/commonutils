@@ -1,5 +1,6 @@
 package com.oddrock.common.httpclient;
 
+import java.io.IOException;
 import java.util.ArrayList;  
 import java.util.HashMap;  
 import java.util.List;  
@@ -61,11 +62,18 @@ public class KeepSessionAfterLogin {
                 httpResponse.setContent(retStr);
                 httpResponse.setStatusCode(statusCode);
             }  
-            // 释放资源  
-            closeableHttpClient.close();  
         } catch (Exception e) {  
             e.printStackTrace();  
-        }  
+        } finally {
+        	// 释放资源  
+            try {
+            	if(closeableHttpClient!=null) {
+            		closeableHttpClient.close();
+            	}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}  
+        }
         return httpResponse;  
     }  
 	
