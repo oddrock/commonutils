@@ -87,6 +87,23 @@ public class OddrockStringUtils {
 
 	}
 	
+	/**
+	 * 判断是否是手机号
+	 * @param mobile
+	 * @return
+	 */
+	public static boolean isMobile(String mobile) {
+		if(mobile==null) {
+			return false;
+		}
+		mobile = mobile.trim();
+		Pattern p = null;
+		Matcher m = null;
+		p = Pattern.compile("^[1][0-9]{10}$"); // 验证手机号
+		m = p.matcher(mobile);
+		return m.matches();
+	}
+	
 	public static void main(String[] args) throws IOException {
 		File file = new File("D:\\_caj2pdf\\cajwait");
 		for(File f:file.listFiles()) {
