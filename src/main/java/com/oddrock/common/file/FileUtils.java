@@ -735,7 +735,7 @@ public class FileUtils {
 		 * getAllFilesAbsoultePathRecursively("C:\\Users\\oddro\\Desktop\\熊逸书院" )){
 		 * System.out.println(path); }
 		 */
-		gatherAllFiles("X:\\百度云\\熊逸书院（第一季）");
+		gatherAllFiles("X:\\百度云\\梁宁产品思维30讲（完）");
 		/*
 		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\关系攻略",
 		 * "C:\\Users\\oddro\\Desktop\\得到\\关系攻略", true);
