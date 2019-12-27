@@ -1,6 +1,5 @@
 package com.oddrock.common;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,10 +103,84 @@ public class OddrockStringUtils {
 		return m.matches();
 	}
 	
+	/**
+	 * 遮罩掉URL里的参数
+	 * @param url
+	 * @param paramName
+	 * @return
+	 */
+	public static String dataMaskUrlParam(String url, String paramName) {
+		Pattern pattern = Pattern.compile(paramName+"=(.*?)&");
+		Matcher matcher = pattern.matcher(url);
+		if(matcher.find()) {
+			return url.replaceAll(paramName+"=(.*?)&", paramName+"=***&");
+		}else {
+			pattern = Pattern.compile(paramName+"=(.*?)$");
+			matcher = pattern.matcher(url);
+			if(matcher.find()) {
+				return url.replaceAll(paramName+"=(.*?)$", paramName+"=***");
+			}
+		}
+		return url;
+	}
+	
+	public static String dataMaskBodyParam(String body, String paramName) {
+		Pattern pattern = Pattern.compile("\""+paramName+"\"\\s*:\\s*\".*?\"");		// 匹配"name":"value"这样的格式
+		Matcher matcher = pattern.matcher(body);
+		if(matcher.find()) {
+			return body.replaceAll("\""+paramName+"\"\\s*:\\s*\".*?\"", "\""+paramName+"\":\"***\"");
+		}else {
+			pattern = Pattern.compile("\""+paramName+"\"\\s*:[^\\}\"]*?,");			// 匹配"name": value, 这样的格式
+			matcher = pattern.matcher(body);
+			if(matcher.find()) {
+				return body.replaceAll("\""+paramName+"\"\\s*:[^\\}\"]*?,", "\""+paramName+"\":,");
+			}else {
+				pattern = Pattern.compile("\""+paramName+"\"\\s*:.*?}");			// 匹配"name": value} 这样的格式
+				matcher = pattern.matcher(body);
+				if(matcher.find()) {
+					return body.replaceAll("\""+paramName+"\"\\s*:.*?}", "\""+paramName+"\":}");
+				}
+			}
+		}
+		return body;
+	}
+	
+	/**
+	 * 向字符串左边填充指定字符
+	 * @param srcStr
+	 * @param totalLength
+	 * @param padStr
+	 * @return
+	 */
+	public static String leftPad(String srcStr, int totalLength, char c) {
+		String dstStr = srcStr;
+		while(dstStr.length()<totalLength) {
+			dstStr = c + dstStr;
+		}
+		return dstStr;
+	}
+	
 	public static void main(String[] args) throws IOException {
-		File file = new File("D:\\_caj2pdf\\cajwait");
+		/*File file = new File("D:\\_caj2pdf\\cajwait");
 		for(File f:file.listFiles()) {
 			System.out.println(OddrockStringUtils.deleteSpecCharacters(f.getCanonicalPath()));
-		}
+		}*/
+		
+		/*String url = "http://localhost:19001/bankapisrv/accountidentify?bankcard=6214809701290010328&name=%E5%BC%A0%E4%B8%89&idcard=34012319801008004&mobile=18012345678&appid=test-gK33ide7mPmd05Ma";
+		Pattern pattern = Pattern.compile("name=(.*?)&");
+		Matcher matcher = pattern.matcher(url);
+		System.out.println(matcher.find());//必须要有这句
+		System.out.println(matcher.group(0));
+		System.out.println(url.replaceAll("name=(.*?)&", "name=xxxxxx&"));*/
+		
+		String body = "{\"data\":{\"accountType\":\"\",\"bankCard\":\"6214809701290010328\",\"bankName\":\"\",\"hasResult\":\"N\",\"idCard\":\"34012319801008004\",\"mobile\":\"18012345678\",\"name\":\"张三\", \"team\": 123, \"cach\": 123, \"cash\": 123 },\"resp\":{\"error_code\":150104,\"reason\":\"请求参数错误\"}}";
+		/*Pattern pattern = Pattern.compile("\"name\"\\s*:\\s*\"(.*?)\"");
+		Matcher matcher = pattern.matcher(body);
+		System.out.println(matcher.find());
+		System.out.println(matcher.group(0));
+		System.out.println(body.replaceAll("\"name\"\\s*:\\s*\"(.*?)\"", "\"name\":\"***\""));*/
+		System.out.println(dataMaskBodyParam(body, "name"));
+		System.out.println(dataMaskBodyParam(body, "team"));
+		System.out.println(dataMaskBodyParam(body, "cash"));
 	}
 }

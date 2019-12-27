@@ -19,6 +19,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.oddrock.common.OddrockStringUtils;
+
 public class FileUtils {
 	private static Logger logger = Logger.getLogger(FileUtils.class);
 
@@ -735,7 +737,7 @@ public class FileUtils {
 		 * getAllFilesAbsoultePathRecursively("C:\\Users\\oddro\\Desktop\\熊逸书院" )){
 		 * System.out.println(path); }
 		 */
-		gatherAllFiles("X:\\百度云\\梁宁产品思维30讲（完）");
+		
 		/*
 		 * gatherAllFiles("C:\\Users\\oddro\\Desktop\\关系攻略",
 		 * "C:\\Users\\oddro\\Desktop\\得到\\关系攻略", true);
@@ -766,5 +768,15 @@ public class FileUtils {
         		System.out.println(f);
         	}  
         }*/ 
+		
+		//gatherAllFiles("X:\\百度云\\每天听本书");
+		
+		String result = readFileContentToStr("C:\\Users\\oddro\\Desktop\\新建文本文档 (2).txt");
+		String[] arr = result.split("\\n");
+		String model = "http://quotes.money.163.com/trade/lsjysj_zhishu_XXXXXX.html";
+		for(int i=0;i<arr.length; i++) {
+			System.out.println(model.replace("XXXXXX", OddrockStringUtils.leftPad(arr[i], 6, '0')));
+		}
+		
 	}
 }

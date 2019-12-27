@@ -86,7 +86,7 @@ public class ImgCompresser {
 	
 	public static void compressImg(String srcImgFilePath, String addStr) throws IOException {
 		File srcImg = new File(srcImgFilePath);
-		compressImg(srcImg, addStr, 0.618f);
+		compressImg(srcImg, addStr, 0.1f);
 	}
 	
 	public static void compressImg(String srcImgFilePath) throws IOException {
@@ -118,9 +118,10 @@ public class ImgCompresser {
 	
 	
 	public static void main(String[] args) throws IOException {
-		String srcDirPath = "C:\\Users\\oddro\\Desktop\\新建文件夹";
-		String srcImgFilePath = "C:\\Users\\oddro\\Desktop\\新建文件夹\\变形金刚2_009.jpg";
-		File srcImg = new File("C:\\Users\\oddro\\Desktop\\新建文件夹\\变形金刚2_009.jpg");
-		compressImgBatch(srcDirPath);
+		//String srcDirPath = "C:\\Users\\oddro\\Desktop\\新建文件夹";
+		String srcImgFilePath = "C:\\_XPS13_DocNotCloud\\个人资料\\04 淘宝\\IMG_20170909_093551.jpg";
+		//File srcImg = new File("C:\\Users\\oddro\\Desktop\\新建文件夹\\变形金刚2_009.jpg");
+		//compressImgBatch(srcDirPath);
+		compressImg(srcImgFilePath);
 	}
 }
