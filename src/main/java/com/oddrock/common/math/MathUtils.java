@@ -13,4 +13,17 @@ public class MathUtils {
 	public static boolean isNumeric(String str){ 
 	    return pattern.matcher(str).matches();    
 	}
+	
+	public static Double round(Double input, int reservedDigit) {
+		int x = 1;
+		for(int i=0;i<reservedDigit;i++) {
+			x = x * 10;
+		}
+		return (double) Math.round(input * 100) / 100;		
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(round(3049.8757,2));
+		System.out.println(round(2940.1916,2));
+	}
 }

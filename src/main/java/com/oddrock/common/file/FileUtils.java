@@ -769,14 +769,14 @@ public class FileUtils {
         	}  
         }*/ 
 		
-		//gatherAllFiles("X:\\百度云\\每天听本书");
+		gatherAllFiles("C:\\Users\\oddro\\Desktop\\卫安原\\2016");
 		
-		String result = readFileContentToStr("C:\\Users\\oddro\\Desktop\\新建文本文档 (2).txt");
+		/*String result = readFileContentToStr("C:\\Users\\oddro\\Desktop\\新建文本文档 (2).txt");
 		String[] arr = result.split("\\n");
 		String model = "http://quotes.money.163.com/trade/lsjysj_zhishu_XXXXXX.html";
 		for(int i=0;i<arr.length; i++) {
 			System.out.println(model.replace("XXXXXX", OddrockStringUtils.leftPad(arr[i], 6, '0')));
-		}
+		}*/
 		
 	}
 }
