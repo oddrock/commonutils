@@ -85,9 +85,16 @@ public class DateUtils {
 		long between_days = (time2 - time1) / (1000 * 3600 * 24);
 		return Integer.parseInt(String.valueOf(between_days));
 	}
+	
+	public static Date getYestoday() {
+		Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
+        return calendar.getTime();
+	}
 
 	public static void main(String[] args) {
-		System.out.println(getFormatTime1());
+		System.out.println(getYestoday());
 	}
 
 }
