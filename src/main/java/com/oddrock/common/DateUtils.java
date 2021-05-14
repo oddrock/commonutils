@@ -86,7 +86,7 @@ public class DateUtils {
 		return Integer.parseInt(String.valueOf(between_days));
 	}
 	
-	public static Date getYestoday() {
+	public static Date yestoday() {
 		Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
@@ -94,7 +94,7 @@ public class DateUtils {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(getYestoday());
+		System.out.println(yestoday());
 	}
 
 }
