@@ -96,5 +96,18 @@ public class DateUtils {
 	public static void main(String[] args) {
 		System.out.println(yestoday());
 	}
+	
+	/**
+	 * 获取多少天之前的日期
+	 * @param d
+	 * @param day
+	 * @return
+	 */
+	public static  Date getPastDate(Date d, int day) {
+		Calendar now = Calendar.getInstance();  
+		now.setTime(d);  
+		now.set(Calendar.DATE,now.get(Calendar.DATE)-day);  
+		return now.getTime();  
+	 }
 
 }
