@@ -109,5 +109,18 @@ public class DateUtils {
 		now.set(Calendar.DATE,now.get(Calendar.DATE)-day);  
 		return now.getTime();  
 	 }
+	
+	/**
+	 * 获取多少天之后的日期
+	 * @param d
+	 * @param day
+	 * @return
+	 */
+	public static  Date getFutureDate(Date d, int day) {
+		Calendar now = Calendar.getInstance();  
+		now.setTime(d);  
+		now.set(Calendar.DATE,now.get(Calendar.DATE)+day);  
+		return now.getTime();  
+	 }
 
 }
