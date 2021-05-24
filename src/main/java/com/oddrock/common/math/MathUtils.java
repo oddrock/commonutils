@@ -19,7 +19,7 @@ public class MathUtils {
 		for(int i=0;i<reservedDigit;i++) {
 			x = x * 10;
 		}
-		return (double) Math.round(input * 100) / 100;		
+		return (double) Math.round(input * x) / x;		
 	}
 	
 	public static void main(String[] args) {
