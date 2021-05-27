@@ -1,5 +1,6 @@
 package com.oddrock.common.math;
 
+import java.util.Random;
 import java.util.regex.Pattern;
 
 public class MathUtils {
@@ -21,6 +22,62 @@ public class MathUtils {
 		}
 		return (double) Math.round(input * x) / x;		
 	}
+	
+	/**
+	 * 生成指定范围随机数
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	public static int randomInt(int min, int max){
+	    Random random = new Random();
+	    int s = random.nextInt(max) % (max - min + 1) + min;
+	    return s;
+	 
+	}
+	
+	//方差s^2=[(x1-x)^2 +...(xn-x)^2]/n 或者s^2=[(x1-x)^2 +...(xn-x)^2]/(n-1)
+	/**
+	 * 计算方差
+	 * @param x
+	 * @return
+	 */
+    public static double variance(double[] x) {
+        int m=x.length;
+        double sum=0;
+        for(int i=0;i<m;i++){//求和
+            sum+=x[i];
+        }
+        double dAve=sum/m;//求平均值
+        double dVar=0;
+        for(int i=0;i<m;i++){//求方差
+            dVar+=(x[i]-dAve)*(x[i]-dAve);
+        }
+        return dVar/m;
+    }
+
+    //标准差σ=sqrt(s^2)
+    /**
+     * 计算标差
+     * @param x
+     * @return
+     */
+    public static double standardDiviation(double[] x) {
+        return Math.sqrt(variance(x));
+    }
+    
+    /**
+     * 计算整数数组的标差
+     * @param x
+     * @return
+     */
+    public static double standardDiviation(int[] x) {
+    	double[] y = new double[x.length];
+    	for(int i=0; i<x.length; i++) {
+    		y[i] = Double.valueOf(x[i]);
+    	}
+        return Math.sqrt(variance(y));
+    }
 	
 	public static void main(String[] args) {
 		System.out.println(round(3049.8757,2));
