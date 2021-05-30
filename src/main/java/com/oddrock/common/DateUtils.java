@@ -87,10 +87,25 @@ public class DateUtils {
 	}
 	
 	public static Date yestoday() {
+		return yestoday(new Date());
+	}
+	
+	public static Date yestoday(Date date) {
 		Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+        calendar.setTime(date);
         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
         return calendar.getTime();
+	}
+	
+	public static Date tommorrow(Date date) {
+		Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
+        return calendar.getTime();
+	}
+	
+	public static Date tommorrow() {
+		return tommorrow(new Date());
 	}
 
 	public static void main(String[] args) {

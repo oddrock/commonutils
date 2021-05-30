@@ -21,22 +21,20 @@ public class XirrUtils {
 	//准备测试数据--日期
 	private static List<String> getDates(){
 		List<String> list = new ArrayList<String>();
-		list.add("2015-12-10");
-		list.add("2016-01-15");
-		list.add("2016-04-15");
-		list.add("2016-07-15");
-		list.add("2016-10-15");
+		list.add("2021-05-17");
+		list.add("2021-05-19");
+		list.add("2021-05-24");
+		list.add("2021-05-31");
 		return list;
 	}
 	
 	//准备测试数据--现金流(先负 后正)
 	private static List<Double> getCashFlow(){
 		List<Double> list = new ArrayList<Double>();
-		list.add(-41550000.00);
-		list.add(197362.50);
-		list.add(498888.54);
-		list.add(5118888.54);
-		list.add(50682819.17);
+		list.add(-265.10);
+		list.add(-287.80);
+		list.add(-259.80);
+		list.add(842.62);
 		return list;
 	}
 	
