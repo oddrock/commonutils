@@ -73,17 +73,23 @@ public class DateUtils {
 	 * @return 			相差天数
 	 * @throws 			ParseException
 	 */
-	public static int daysBetween(Date smallDate, Date bigDate) throws ParseException {
+	public static Integer daysBetween(Date smallDate, Date bigDate) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		smallDate = sdf.parse(sdf.format(smallDate));
-		bigDate = sdf.parse(sdf.format(bigDate));
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(smallDate);
-		long time1 = cal.getTimeInMillis();
-		cal.setTime(bigDate);
-		long time2 = cal.getTimeInMillis();
-		long between_days = (time2 - time1) / (1000 * 3600 * 24);
-		return Integer.parseInt(String.valueOf(between_days));
+		try {
+			smallDate = sdf.parse(sdf.format(smallDate));
+			bigDate = sdf.parse(sdf.format(bigDate));
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(smallDate);
+			long time1 = cal.getTimeInMillis();
+			cal.setTime(bigDate);
+			long time2 = cal.getTimeInMillis();
+			long between_days = (time2 - time1) / (1000 * 3600 * 24);
+			return Integer.parseInt(String.valueOf(between_days));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static Date yestoday() {
@@ -108,9 +114,7 @@ public class DateUtils {
 		return tommorrow(new Date());
 	}
 
-	public static void main(String[] args) {
-		System.out.println(yestoday());
-	}
+	
 	
 	/**
 	 * 获取多少天之前的日期
@@ -137,5 +141,29 @@ public class DateUtils {
 		now.set(Calendar.DATE,now.get(Calendar.DATE)+day);  
 		return now.getTime();  
 	 }
+	
+	public static Date millis2Date(Long millis) {
+		Date date = new Date();
+		date.setTime(millis);
+		return date;
+	}
+	
+	public static Date yearsAfter(int years, Date date) {
+		return daysAfter(365*years, date);
+	}
 
+	public static Date daysAfter(int days, Date date) {
+		if(date==null) {
+			date = new Date();
+		}
+		Calendar canlendar = Calendar.getInstance(); 
+		canlendar.setTime(date); 
+		canlendar.add(Calendar.DATE, days); 
+		Date result = canlendar.getTime();
+		return result;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(yearsAfter(-10, null));
+	}
 }

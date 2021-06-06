@@ -1,13 +1,23 @@
 package com.oddrock.common.time;
 
+import java.util.Date;
+
+import com.oddrock.common.DateUtils;
+
 public class Timer {
 	private Long startTime;
 	private Long endTime;
 	public Long getStartTime() {
 		return this.startTime;
 	}
+	public Date getStartTimeInDate() {
+		return DateUtils.millis2Date(this.startTime);
+	}
 	public Long getEndTime() {
 		return this.endTime;
+	}
+	public Date getEndTimeInDate() {
+		return DateUtils.millis2Date(this.endTime);
 	}
 	// 开始计时
 	public Timer start() {

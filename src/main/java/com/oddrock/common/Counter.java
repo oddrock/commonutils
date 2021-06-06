@@ -1,14 +1,20 @@
 package com.oddrock.common;
 
 public class Counter {
-	private int counter;
-	public synchronized void incre() {
-		counter++;
+	private int count;
+	public void incre() {
+		this.count++;
 	}
-	public synchronized void decre() {
-		counter--;
+	public void incre(int count) {
+		this.count+=count;
 	}
-	public synchronized int get() {
-		return counter;
+	public void decre() {
+		this.count--;
+	}
+	public void decre(int count) {
+		this.count-=count;
+	}
+	public int get() {
+		return this.count;
 	}
 }
