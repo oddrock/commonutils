@@ -78,9 +78,17 @@ public class MathUtils {
     	}
         return Math.sqrt(variance(y));
     }
+    
+    public static boolean isEqualDouble(Double a, Double b) {
+    	return Double.doubleToLongBits(a) == Double.doubleToLongBits(b);
+    }
 	
 	public static void main(String[] args) {
-		System.out.println(round(3049.8757,2));
-		System.out.println(round(2940.1916,2));
+		//System.out.println(round(3049.8757,2));
+		//System.out.println(round(2940.1916,2));
+		Double a = 0.009;
+		Double b = 0.009;
+		System.out.println(a==b);
+		System.out.println(isEqualDouble(a,b));
 	}
 }

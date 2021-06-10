@@ -59,8 +59,7 @@ public class DateUtil {
 	 */
 	public static final String DATE_FORMATE_HOUR_MINUTE = "HH:mm";
 	public static final String DATE_FORMATE_HOUR_MINUTE_SECOND = "HH:mm:ss";
- 
-	public static SimpleDateFormat dateFormate = new SimpleDateFormat();
+
  
 	/**
 	 * 获取当前的字符串日期

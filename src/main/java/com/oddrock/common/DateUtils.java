@@ -6,22 +6,25 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtils {
-	private static final SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
-	private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 
 	public static String getFormatTime1(Date date) {
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
 		return format1.format(date);
 	}
 
 	public static String getFormatTime1() {
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
 		return format1.format(new Date());
 	}
 
 	public static String getFormatTime(Date date) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return format.format(date);
 	}
 
 	public static String getFormatTime() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return format.format(new Date());
 	}
 
@@ -86,7 +89,24 @@ public class DateUtils {
 			long between_days = (time2 - time1) / (1000 * 3600 * 24);
 			return Integer.parseInt(String.valueOf(between_days));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static Integer secondsBetween(Date smallDate, Date bigDate) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			smallDate = sdf.parse(sdf.format(smallDate));
+			bigDate = sdf.parse(sdf.format(bigDate));
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(smallDate);
+			long time1 = cal.getTimeInMillis();
+			cal.setTime(bigDate);
+			long time2 = cal.getTimeInMillis();
+			long between_days = (time2 - time1) / (1000);
+			return Integer.parseInt(String.valueOf(between_days));
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		return null;
