@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.oddrock.common.CommonProp;
 import com.oddrock.common.file.FileUtils;
+import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.pop3.POP3Folder;
 
 // 记录有哪些邮件被接收了
@@ -210,5 +211,17 @@ public class PopMailReadRecordManager {
 		}else{
 			return readMailUIDsMap.get(key).size();
 		}
+	}
+
+	public boolean isReadInAllDays(String account, IMAPFolder folder, Message message) throws MessagingException {
+		String UID = String.valueOf(folder.getUID(message));
+		String key = combineKey(account, "all", null);
+		return isRead(key, UID);
+	}
+
+	public void setReadInAllDays(String account, IMAPFolder folder, Message message) throws MessagingException, IOException {
+		String UID = String.valueOf(folder.getUID(message));
+		String key = combineKey(account, "all", null);
+		setRead(key, UID);
 	}
 }

@@ -1,5 +1,6 @@
 package com.oddrock.common.math;
 
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -66,6 +67,15 @@ public class MathUtils {
         return Math.sqrt(variance(x));
     }
     
+    public static double standardDiviation(List<Double> x) {
+    	int i = 0;
+    	double[] xarr = new double[x.size()];
+    	for(Double d :x ) {
+    		xarr[i++] = d;
+    	}
+        return standardDiviation(xarr);
+    }
+    
     /**
      * 计算整数数组的标差
      * @param x
@@ -86,9 +96,10 @@ public class MathUtils {
 	public static void main(String[] args) {
 		//System.out.println(round(3049.8757,2));
 		//System.out.println(round(2940.1916,2));
-		Double a = 0.009;
+		/*Double a = 0.009;
 		Double b = 0.009;
 		System.out.println(a==b);
-		System.out.println(isEqualDouble(a,b));
+		System.out.println(isEqualDouble(a,b));*/
+		System.out.println(round(342.52,0));
 	}
 }

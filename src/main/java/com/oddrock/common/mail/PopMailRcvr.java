@@ -30,6 +30,7 @@ import com.oddrock.common.CommonProp;
 import com.oddrock.common.DateUtils;
 import com.oddrock.common.file.FileUtils;
 import com.oddrock.common.windows.SensitiveStringUtils;
+import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.pop3.POP3Folder;
 
 public class PopMailRcvr{
@@ -93,6 +94,89 @@ public class PopMailRcvr{
 			if (store != null) store.close();
 		}
 		return mails;
+	}
+	
+	public List<MailRecv> rcvMailImap(String server, String account, String passwd, 
+			String folderName, boolean downloadAttachToLocal, String localAttachDirPath, 
+			AttachDownloadDirGenerator generator) throws Exception{
+		Session session = createSession(server, account, passwd);	
+		Store store = null;
+		Folder folder = null;
+		List<MailRecv> mails = new ArrayList<MailRecv>();	
+		try {
+			store = session.getStore("imap");
+			store.connect(server, account, passwd);
+			if(folderName==null) folderName = "INBOX";
+			folder = store.getFolder(folderName);
+			folder.open(Folder.READ_WRITE);
+			logger.warn("已打开【"+folderName+"】邮箱");
+			Message[] messages = folder.getMessages(); 
+			for (Message message : messages) {  
+				if(PopMailReadRecordManager.instance.isReadInAllDays(account, (IMAPFolder)folder, message)) {
+					continue;
+				}
+				MailRecv mail = parseMailImap(message, account, folder, downloadAttachToLocal, localAttachDirPath, generator);
+				mails.add(mail);
+				PopMailReadRecordManager.instance.setReadInAllDays(account, (IMAPFolder)folder, message);
+			}
+			logger.warn("有"+mails.size()+"封新邮件");
+		}catch(Exception exception){
+			// 如果出现异常，则回滚已记录的邮件UID，便于重新下载。
+			if(mails!=null) {
+				for(MailRecv mail: mails) {
+					PopMailReadRecordManager.instance.setUnReadInAllDays(account, mail.getUID());
+					if(mail.getAttachments()!=null) {
+						FileUtils.deleteDirAndAllFiles(new File(mail.getAttachments().get(0).getLocalFilePath()).getParentFile());
+					}
+				}
+			}
+			logger.warn("出现异常，将本次所有已收到的邮件删除，并将记录设为未读");
+			throw exception;
+		}finally{
+			if (folder != null) folder.close(false);
+			if (store != null) store.close();
+		}
+		return mails;
+	}
+
+	private MailRecv parseMailImap(Message message, String account, Folder folder, boolean downloadAttachToLocal,
+			String localAttachDirPath, AttachDownloadDirGenerator generator) throws Exception {
+		logger.warn("开始解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
+		MimeMessageParser parser = null;
+		parser = new MimeMessageParser((MimeMessage) message).parse();
+		logger.warn("结束解析来自【"+message.getFrom()[0]+"】主题为【"+message.getSubject()+"】的邮件...");
+		MailRecv mail = new MailRecv();
+		mail.init(parser, message);
+		mail.setMailAccount(account);
+		mail.setUID(String.valueOf(((IMAPFolder)folder).getUID(message)));
+		List<DataSource> attachments = parser.getAttachmentList(); // 获取附件，并写入磁盘
+		for (DataSource ds : attachments) {
+			MailRecvAttach attachment = new MailRecvAttach();
+			mail.getAttachments().add(attachment);
+			attachment.setContentType(ds.getContentType());
+			attachment.setName(ds.getName());	
+			if(downloadAttachToLocal){
+				File dir = generator.generateDir(new File(localAttachDirPath), mail);
+				dir.mkdirs();
+				String plainContent = mail.getPlainContent();
+				String plainContentFilePath = new File(dir,"00_邮件正文.txt").getCanonicalPath();
+				FileUtils.writeToFile(plainContentFilePath, plainContent, false);
+				logger.warn("已将邮件正文内容保存到到【"+plainContentFilePath+"】...");
+				if(!StringUtils.isBlank(ds.getName())){
+					String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(ds.getName().trim())).getCanonicalPath();
+					attachment.setLocalFilePath(filePath);
+					logger.warn("开始下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
+					downloadAttachToLocal(ds, filePath);	
+					logger.warn("结束下载附件【"+ ds.getName() + "】到【"+filePath+"】...");
+				}
+			}
+		}
+		if(CommonProp.getBool("mail.contentshow")){
+			logger.warn("开始显示邮件内容");
+			logger.warn(mail.getPlainContent());
+			logger.warn("结束显示邮件内容");	
+		}
+		return mail;
 	}
 
 	private Session createSession(String server, String account, String passwd) {
@@ -250,6 +334,10 @@ public class PopMailRcvr{
 			if(downloadAttachToLocal){
 				File dir = generator.generateDir(new File(localAttachDirPath), mail);
 				dir.mkdirs();
+				String plainContent = mail.getPlainContent();
+				String plainContentFilePath = new File(dir,"00_邮件正文.txt").getCanonicalPath();
+				FileUtils.writeToFile(plainContentFilePath, plainContent, false);
+				logger.warn("已将邮件正文内容保存到到【"+plainContentFilePath+"】...");
 				if(!StringUtils.isBlank(ds.getName())){
 					String filePath =  new File(dir,SensitiveStringUtils.replaceSensitiveString(ds.getName().trim())).getCanonicalPath();
 					attachment.setLocalFilePath(filePath);

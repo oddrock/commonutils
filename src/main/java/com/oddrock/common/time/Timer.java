@@ -45,6 +45,12 @@ public class Timer {
 			return System.currentTimeMillis()-this.startTime;
 		}
 	}
+	
+	// 获得当前已花费时间，单位是毫秒
+	public Long getSpentTimeSeconds() {
+		return getSpentTimeMillis()/1000;
+	}
+	
 	public Timer() {
 		super();
 		this.startTime = -1L;
