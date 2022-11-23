@@ -16,10 +16,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
 import com.oddrock.common.OddrockStringUtils;
+import com.oddrock.common.windows.SensitiveStringUtils;
 
 public class FileUtils {
 	private static Logger logger = Logger.getLogger(FileUtils.class);
@@ -272,6 +275,10 @@ public class FileUtils {
 
 	public static void writeToFile(String filePath, String conent, boolean append, String encoding) {
 		BufferedWriter out = null;
+		File file = new File(filePath);
+		if(!file.exists() || !file.isFile()) {
+			append = false;
+		}
 		try {
 			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, append), encoding));
 			out.write(conent);
@@ -778,5 +785,18 @@ public class FileUtils {
 			System.out.println(model.replace("XXXXXX", OddrockStringUtils.leftPad(arr[i], 6, '0')));
 		}*/
 		
+	}
+	
+	public static String removeInvaildSymbolInFileName(String fileName) {
+		fileName = fileName.trim();
+		fileName = OddrockStringUtils.deleteSpecCharacters(fileName);
+		fileName = SensitiveStringUtils.replaceSensitiveString(fileName);
+		Pattern p = Pattern.compile("\n");
+        Matcher m = p.matcher(fileName);
+        fileName = m.replaceAll("");
+        Pattern pattern = Pattern.compile("[\\\\/:\\*\\?\\\"<>\\|]");
+        Matcher matcher = pattern.matcher(fileName);
+        fileName= matcher.replaceAll(""); // 将匹配到的非法字符以空替换
+        return fileName;
 	}
 }

@@ -14,6 +14,26 @@ public class DateUtils {
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");
 		return format1.format(date);
 	}
+	
+	public static String getFormatTime2(Date date) {
+		if(date!=null) {
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+			return format1.format(date);
+		}else {
+			return null;
+		}
+		
+	}
+	
+	public static String getFormatDate(Date date, String patternStr) {
+		SimpleDateFormat format1 = new SimpleDateFormat(patternStr);
+		return format1.format(date);
+	}
+	
+	public static String getFormatDate(Date date) {
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		return format1.format(date);
+	}
 
 	public static String getFormatTime1() {
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddHHmmss");

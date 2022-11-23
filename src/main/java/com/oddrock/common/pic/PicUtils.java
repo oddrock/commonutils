@@ -2,24 +2,21 @@ package com.oddrock.common.pic;
 
 import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
+/*import java.io.OutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
-import javax.media.jai.RenderedOp;
-
+import javax.media.jai.RenderedOp;*/
+import javax.imageio.ImageIO;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-
 import com.oddrock.common.ai.BaiduAiUtils;
 import com.oddrock.common.file.FileUtils;
-import com.sun.media.jai.codec.ImageCodec;
+/*import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageEncoder;
 import com.sun.media.jai.codec.JPEGEncodeParam;
-
+*/
 import net.coobird.thumbnailator.Thumbnails;
 
 
@@ -32,7 +29,7 @@ public class PicUtils {
 	 * @param jpgFilePath
 	 * @throws IOException
 	 */
-	public static boolean transferTiff2Jpg(String tiffFilePath, String jpgFilePath, boolean overwrite) {
+	/*public static boolean transferTiff2Jpg(String tiffFilePath, String jpgFilePath, boolean overwrite) {
 		// 源文件不存在不转换
 		if(!FileUtils.fileExists(tiffFilePath)) return false;
 		// 目标文件已存在且目标文件不覆盖不转换
@@ -62,9 +59,9 @@ public class PicUtils {
 			} 
 		}
         return false;
-	}
+	}*/
 	
-	public static String transferTiff2Jpg(String tiffFilePath, boolean overwrite) throws IOException {
+	/*public static String transferTiff2Jpg(String tiffFilePath, boolean overwrite) throws IOException {
 		// 源文件不存在不转换
 		if(!FileUtils.fileExists(tiffFilePath)) return null;
 		File tiffFile = new File(tiffFilePath);
@@ -78,11 +75,11 @@ public class PicUtils {
 			return null;
 		}
 		
-	}
+	}*/
 	
-	public static String transferTiff2Jpg(String tiffFilePath) throws IOException {
+	/*public static String transferTiff2Jpg(String tiffFilePath) throws IOException {
 		return transferTiff2Jpg(tiffFilePath, true);
-	}
+	}*/
 	
 	public static void createTxtFileFromPic(File file, File dir, boolean overwrite) throws IOException {
 		if(!FileUtils.fileExists(file) || !FileUtils.dirExists(dir)){

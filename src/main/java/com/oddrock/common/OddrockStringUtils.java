@@ -159,6 +159,29 @@ public class OddrockStringUtils {
 		}
 		return dstStr;
 	}
+	/**
+	 * 截取前几位子串
+	 * @param s
+	 * @param x
+	 * @return
+	 */
+	public static String interceptFirstXSubStr(String s, int x) {
+		if(s==null) {
+			return s;
+		}
+		s = s.trim();
+		if(s.length()==0) {
+			return s;
+		}
+		if(x<=0) {
+			return s;
+		}
+		int len = s.length();
+		if(x>len) {
+			x = len;
+		}
+		return s.substring(0, x);
+	}
 	
 	public static void main(String[] args) throws IOException {
 		/*File file = new File("D:\\_caj2pdf\\cajwait");
